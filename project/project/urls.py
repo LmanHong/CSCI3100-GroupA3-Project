@@ -23,4 +23,5 @@ urlpatterns = [
 
     path('', account.views.HomeView.as_view(), name='home'),
     path('profile/', account.views.ProfileView.as_view(), name='profile'),
+    path('register/', account.views.RegistrationView.as_view(), name='register')
 ]

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+HIHI, {% if user.is_authenticated %}{{user.username}}{% else %}Anonymous{% endif %}
+
+{% endblock content %}

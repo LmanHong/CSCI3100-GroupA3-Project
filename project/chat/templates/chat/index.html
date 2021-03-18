@@ -1,18 +1,21 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script defer src="{% static 'chat/chat_api.js' %}"></script>
-    {% if roomname %}
-        <title>Chatroom - {{roomname}}</title>
-    {% else %}
-        <title>Unknown Chatroom</title>
-    {% endif %}
-</head>
-<body>
-    <h1>Hello World!</h1>
-</body>
-</html>
+{% extends './base.html' %}
+
+{% block title %} <title>Enter a chatroom</title> {% endblock title %}
+
+{% block content %}
+
+<p>Enter a chatroom</p><br>
+<input type="text" name="roomName" id="roomName"><input id="enterBtn" type="button" value="Enter">
+
+<script>
+    const url = 'http://'+window.location.host;
+    const roomNameRef = document.getElementById('roomName');
+    const enterBtn = document.getElementById('enterBtn');
+
+    enterBtn.addEventListener('click', (e)=>{
+        if (roomNameRef.value != '') window.location.href = url+"/chat/"+roomNameRef.value;
+        else console.error("ERROR: Empty room name!");
+    });
+</script>
+
+{% endblock content %}

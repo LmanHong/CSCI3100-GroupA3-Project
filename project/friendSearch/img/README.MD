@@ -1,1 +1,2 @@
-# this file store the images used in this module
+# Objective 
+this file store the images used in this module

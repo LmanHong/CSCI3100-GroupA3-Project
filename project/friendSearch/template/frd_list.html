@@ -8,6 +8,26 @@
     <h2>The recommanded friends list:</h2>
     <body>
         <div><p>Click "accept" or "reject"</p></div>
-        <!--show the list of the recommanded friends, found in database-->
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for acct in accts%}
+                <tr>
+                    <td>{{acct.name}}</td>
+                    <td>{{acct.username}}</td>
+                    <td>
+                        <button type = "button">Accept</button>
+                        <button type = "button">Reject</button>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+
     </body>
 </html>

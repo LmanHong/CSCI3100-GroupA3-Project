@@ -16,7 +16,7 @@ class RegistrationView(View):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
-            return redirect('home') # should be redirecting to the previous page
+            return redirect('home')
         else:
             context = {}
             form = RegistrationForm()
@@ -37,22 +37,28 @@ class RegistrationView(View):
             context['registration_form'] = form
             return render(request, 'register.html', context)
             
-def logout_view(request):
-    logout(request)
-    return redirect('home')
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('home')
 
-def login_view(request):
-    context = {}
-
-    user = request.user
-    if user.is_authenticated:
-        next_url = request.GET.get('next')
-        if next_url:
-            return HttpResponseRedirect(next_url)
+class LoginView(View):
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            next_url = request.GET.get('next')
+            if next_url:
+                return HttpResponseRedirect(next_url)
+            else:
+                return redirect('home')
         else:
-            return redirect('home')
-
-    if request.POST:
+            context = {}
+            form = AccountAuthenticationForm()
+            context['login_form'] = form
+            return render(request, 'login.html', context)
+    
+    def post(self, request):
+        context = {}
         form = AccountAuthenticationForm(request.POST)
         if form.is_valid():
             email = request.POST['email']
@@ -66,8 +72,9 @@ def login_view(request):
                     return HttpResponseRedirect(next_url)
                 else:
                     return redirect('home')
-    else:
-        form = AccountAuthenticationForm()
-    
-    context['login_form'] = form
-    return render(request, 'login.html', context)
+            else:
+                context['login_form'] = form
+                return render(request, 'login.html', context)
+        else:
+            context['login_form'] = form
+            return render(request, 'login.html', context)

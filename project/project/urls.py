@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+# remove this line if you don't use the home view in account
 import account.views
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # you can replace this account home view with a legit home view
     path('', account.views.HomeView.as_view(), name='home'),
 
     path('account/', include('account.urls')),

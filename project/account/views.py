@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import login, authenticate, logout
 from account.forms import RegistrationForm, AccountAuthenticationForm
+from django.http import HttpResponseRedirect
 
 class HomeView(View):
     def get(self, request):
@@ -15,7 +16,7 @@ class RegistrationView(View):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
-            return redirect('home')
+            return redirect('home') # should be redirecting to the previous page
         else:
             context = {}
             form = RegistrationForm()
@@ -45,7 +46,11 @@ def login_view(request):
 
     user = request.user
     if user.is_authenticated:
-        return redirect('home')
+        next_url = request.GET.get('next')
+        if next_url:
+            return HttpResponseRedirect(next_url)
+        else:
+            return redirect('home')
 
     if request.POST:
         form = AccountAuthenticationForm(request.POST)
@@ -56,7 +61,11 @@ def login_view(request):
 
             if user:
                 login(request, user)
-                return redirect('home')
+                next_url = request.POST.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return redirect('home')
     else:
         form = AccountAuthenticationForm()
     

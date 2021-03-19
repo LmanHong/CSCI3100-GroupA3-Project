@@ -21,6 +21,7 @@
         </p>
     {% endfor %}
 
+    <input type="hidden" name="next" value="{{request.GET.next}}">
     <button type="submit">Register</button>
 </form>
 

@@ -27,6 +27,7 @@
     <div style="color: red;">{{login_form.non_field_errors}}</div>
     {% endif %}
 
+    <input type="hidden" name="next" value="{{request.GET.next}}">
     <button type="submit">Login</button>
 </form>
 

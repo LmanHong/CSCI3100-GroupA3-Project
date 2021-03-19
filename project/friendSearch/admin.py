@@ -1,3 +1,5 @@
 from django.contrib import admin
+from firendSearch.models import FrdSearch, FrdList
 
-# Register your models here.
+admin.site.register.(FrdSearch)
+admin.site.register.(FriendList)

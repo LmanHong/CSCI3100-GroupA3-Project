@@ -1,14 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import ChatRoom, ChatMessage
 
 import json
 
-def index(request):
-    return render(request, 'chat/index.html')
+LOGIN='/account/login/'
 
-class ChatRoomView(View):
+class HomeView(LoginRequiredMixin, View):
+    login_url=LOGIN
+    def get(self, request, *args, **kwargs):
+        return render(request, 'chat/index.html')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST['username']:
+            pass
+        return redirect('/chat')
+
+class ChatRoomView(LoginRequiredMixin, View):
+    login_url=LOGIN
+
     def get(self, request, *args, **kwargs):
         room_name = self.kwargs['room_name']
         return render(request, 'chat/chatroom.html', {
@@ -29,3 +41,5 @@ class ChatRoomView(View):
             'status': status,
             'info_str': info_str
         })
+
+

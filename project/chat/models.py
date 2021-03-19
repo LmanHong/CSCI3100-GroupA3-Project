@@ -29,7 +29,6 @@ class ChatRoomManager(models.Manager):
         else:
             from_user = get_user_model().objects.get(username=from_username)
             if not query:
-                print("Inside not query")
                 return self.get_queryset().filter(models.Q(from_user=from_user) | models.Q(to_user=from_user))
             else:
                 return query.filter(models.Q(from_user=from_user) | models.Q(to_user=from_user))
@@ -40,8 +39,6 @@ class ChatRoomManager(models.Manager):
         else:
             from_user = get_user_model().objects.get(username=from_username)
             to_user = get_user_model().objects.get(username=to_username)
-            print(from_user)
-            print(to_user)
             try:
                 room = self.get_chatroom(from_username=from_username, to_username=to_username)
                 return room
@@ -101,7 +98,6 @@ class ChatMessageManager(models.Manager):
                 except:
                     to_room = ChatRoom.objects.create_chatroom(from_username, to_username)
                 return self.create_message(to_room, from_username, msg.message_string)
-
 
     def get_message_count(self, room_name=None, from_username=None, to_username=None):
         return len(self.get_messages_from_chatroom(room_name, from_username, to_username))

@@ -4,11 +4,47 @@
 
 {% block content %}
 
-<p>Enter a chatroom</p><br>
-<form action="/chat/" method="POST">
+<p>Start a chat with user</p><br>
 {% csrf_token %}
-<input type="text" name="username" id="username"><input id="enterBtn" type="submit" value="Enter">
-</form>
+<input type="text" name="username" id="username"><input id="enterBtn" type="button" value="Enter"><br>
+<p id='error'></p>
 
+<script>
+    const url = 'http://'+window.location.host + '/chat/';
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const usernameRef = document.getElementById('username');
+    const enterBtn = document.getElementById('enterBtn');
+    const errorRef = document.getElementById('error');
 
+    var isProcessing = false
+
+    enterBtn.addEventListener('click', e=>{
+        if (!isProcessing){
+            if (usernameRef.value != ''){
+                isProcessing = true;
+                data = {
+                    'to_username':usernameRef.value
+                }
+                fetch(url, {
+                    body: JSON.stringify(data),
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers:{
+                        'content-type': 'application/json',
+                        'X-CSRFToken':csrfToken
+                    },
+                    method: 'POST'
+                }).then(async res=>{
+                    let ret = await res.json();
+                    console.log(ret)
+                    if (ret.status && ret.room_name) window.location.href = url + ret.room_name;
+                    else{
+                        isProcessing = false;
+                        errorRef.innerHTML = (ret.error?ret.error:'Unknown Error!');
+                    }
+                })
+            }else errorRef.innerHTML = 'Username cannot be empty.'
+        }else errorRef.innerHTML = "Processing last request, please do not click the button to frequently."
+    });
+</script>
 {% endblock content %}

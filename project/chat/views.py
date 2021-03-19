@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from .models import ChatRoom, ChatMessage
 
-
+import re
 import json
 
 LOGIN='/account/login/'
@@ -68,16 +68,63 @@ class ChatRoomView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         room_name = self.kwargs['room_name']
         body = json.loads(request.body.decode('utf-8'))
-        message_string = body["message_string"]
         message_status = body["message_status"]
         sent_time = body["sent_time"]
-        if (message_string and message_status and sent_time): status = True
-        else: status = False
-        info_str = "Got information from room {}: {}, sent at {}, status is {}.".format(room_name, message_string, sent_time, message_status)
-        print(info_str)
-        return JsonResponse({
-            'status': status,
-            'info_str': info_str
-        })
+        if (message_status == 'msg'):
+            message_string = body["message_string"]
+            chat_room = ChatRoom.objects.get_chatroom(room_name)
+            if (message_string and message_status and sent_time and (chat_room.from_user==request.user or chat_room.to_user==request.user)):
+                new_msg = ChatMessage.objects.create_message(chat_room=chat_room, sent_by=request.user.username, message_string=message_string)
+                status = True
+                info_str = "Got information from room {}: {}, sent at {}, status is {}. (message ID: {})".format(room_name, message_string, new_msg.sent_time, new_msg.message_status, new_msg.id)
+            else: 
+                status = False
+                info_str = "Message format incorrect."
+            print(info_str)
+            response_json = {
+                'status': status,
+                'info_str': info_str
+            }
+        elif (message_status == 'spc'):
+            special_request= body["special_request"]
+            if (special_request and message_status and sent_time): status = True
+            else: status = False
+            if (status and re.match('^getMessage', special_request)):
+                count = re.search('-[1-9][0-9]*$', special_request)
+                print(count)
+                if count: count = int(count.group()[1:])
+                else: count = 0
+                print('count: ',count)
+                message_set = ChatMessage.objects.get_messages_from_chatroom(int(room_name))
+                message_list = [{
+                    'message_id':message.id,
+                    'message_string':message.message_string,
+                    'message_status':message.message_status,
+                    'error':message.error,
+                    'sent_by':message.sent_by,
+                    'sent_time':message.sent_time
+                } for message in message_set]
+                print(message_list)
+                response_json = {
+                    'status':status,
+                    'message_list':message_list,
+                    'message_count':len(message_list)
+                }
+            else:
+                info_str = "Request format incorrect."
+                print(info_str)
+                response_json = {
+                    'status':status,
+                    'info_str': info_str
+                }
+        else:
+            info_str = "Unknown status."
+            print(info_str)
+            response_json = {
+                'status': False,
+                'info_str': info_str
+            }
+        return JsonResponse(response_json)
+
 
 

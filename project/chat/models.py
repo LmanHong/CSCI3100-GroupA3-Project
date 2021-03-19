@@ -102,15 +102,15 @@ class ChatMessageManager(models.Manager):
     def get_message_count(self, room_name=None, from_username=None, to_username=None):
         return len(self.get_messages_from_chatroom(room_name, from_username, to_username))
     
-    def get_messages_from_chatroom(self, room_name=None, from_username=None, to_username=None):
+    def get_messages_from_chatroom(self, room_name=None, from_username=None, to_username=None, count=0):
         if (not room_name and (not from_username or not to_username)):
             raise ValueError("Room Name and either username cannot be None together")
         elif room_name:
             chat_room = ChatRoom.objects.get_chatroom(room_name)
         else:
             chat_room = ChatRoom.objects.get_chatroom(from_username=from_username, to_username=to_username)
-        return self.get_queryset().filter(models.Q(chat_room=chat_room))
-
+        if count == 0: return self.get_queryset().filter(models.Q(chat_room=chat_room))
+        else: return self.get_queryset().filter(models.Q(chat_room=chat_room))[:count]
 
 class ChatRoom(models.Model):
     room_name = models.AutoField(primary_key=True)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
 class ChatRoomManager(models.Manager):
     def get_chatroom(self, room_name=None,from_username=None, to_username=None, exact=False):
@@ -10,11 +11,11 @@ class ChatRoomManager(models.Manager):
             return self.get_queryset().get(room_name=room_name)
         else:
             if not exact:
-                room = self.get_all_chatrooms_by_user(from_username, self.get_all_chatrooms_by_user(to_username))
+                room = self.get_all_chatrooms_by_user(from_username, query=self.get_all_chatrooms_by_user(to_username))
                 if len(room) == 0:
-                    raise models.ObjectDoesNotExist
+                    raise ObjectDoesNotExist
                 elif len(room) > 1:
-                    raise models.MultipleObjectsReturned
+                    raise MultipleObjectsReturned
                 else:
                     return room[0]
             else:
@@ -28,6 +29,7 @@ class ChatRoomManager(models.Manager):
         else:
             from_user = get_user_model().objects.get(username=from_username)
             if not query:
+                print("Inside not query")
                 return self.get_queryset().filter(models.Q(from_user=from_user) | models.Q(to_user=from_user))
             else:
                 return query.filter(models.Q(from_user=from_user) | models.Q(to_user=from_user))
@@ -38,10 +40,12 @@ class ChatRoomManager(models.Manager):
         else:
             from_user = get_user_model().objects.get(username=from_username)
             to_user = get_user_model().objects.get(username=to_username)
+            print(from_user)
+            print(to_user)
             try:
-                room = self.get_chatroom(from_user=from_user, to_user=to_user)
+                room = self.get_chatroom(from_username=from_username, to_username=to_username)
                 return room
-            except models.MultipleObjectsReturned:
+            except MultipleObjectsReturned:
                 raise ValueError("Duplicated Chatrooms found, need to fix before creating new chatroom")
             except:
                 new_room = self.model(
@@ -114,8 +118,8 @@ class ChatMessageManager(models.Manager):
 
 class ChatRoom(models.Model):
     room_name = models.AutoField(primary_key=True)
-    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='from_user_set', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='to_user_set' ,on_delete=models.CASCADE)
 
     objects = ChatRoomManager()
 

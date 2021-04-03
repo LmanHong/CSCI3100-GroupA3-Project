@@ -6,6 +6,7 @@ import account.views
 urlpatterns = [
     path('profile/', account.views.ProfileView.as_view(), name='profile'),
     path('register/', account.views.RegistrationView.as_view(), name='register'),
-    path('logout/', account.views.logout_view, name='logout'),
-    path('login/', account.views.login_view, name='login'),
+    path('login/', account.views.LoginView.as_view(), name='login'),
+    path('logout/', account.views.LogoutView.as_view(), name='logout'),
+    path('profile_update/', account.views.profile_update, name='profile_update'),
 ]

@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import login, authenticate, logout
-from account.forms import RegistrationForm, AccountAuthenticationForm
+from django.contrib.auth.decorators import login_required
+from account.forms import RegistrationForm, AccountAuthenticationForm, ProfileUpdateForm
 from django.http import HttpResponseRedirect
+
 
 class HomeView(View):
     def get(self, request):
@@ -16,7 +18,7 @@ class RegistrationView(View):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
-            return redirect('home') # should be redirecting to the previous page
+            return redirect('home')
         else:
             context = {}
             form = RegistrationForm()
@@ -36,29 +38,34 @@ class RegistrationView(View):
         else:
             context['registration_form'] = form
             return render(request, 'register.html', context)
-            
-def logout_view(request):
-    logout(request)
-    return redirect('home')
 
-def login_view(request):
-    context = {}
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('home')
 
-    user = request.user
-    if user.is_authenticated:
-        next_url = request.GET.get('next')
-        if next_url:
-            return HttpResponseRedirect(next_url)
+class LoginView(View):
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            next_url = request.GET.get('next')
+            if next_url:
+                return HttpResponseRedirect(next_url)
+            else:
+                return redirect('home')
         else:
-            return redirect('home')
+            context = {}
+            form = AccountAuthenticationForm()
+            context['login_form'] = form
+            return render(request, 'login.html', context)
 
-    if request.POST:
+    def post(self, request):
+        context = {}
         form = AccountAuthenticationForm(request.POST)
         if form.is_valid():
             email = request.POST['email']
             password = request.POST['password']
             user = authenticate(email=email, password=password)
-
             if user:
                 login(request, user)
                 next_url = request.POST.get('next')
@@ -66,8 +73,24 @@ def login_view(request):
                     return HttpResponseRedirect(next_url)
                 else:
                     return redirect('home')
+            else:
+                context['login_form'] = form
+                return render(request, 'login.html', context)
+        else:
+            context['login_form'] = form
+            return render(request, 'login.html', context)
+
+@login_required
+def profile_update(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
     else:
-        form = AccountAuthenticationForm()
-    
-    context['login_form'] = form
-    return render(request, 'login.html', context)
+        form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {}
+    context['profile_update_form'] = form
+
+    return render(request, 'profile_update.html', context)

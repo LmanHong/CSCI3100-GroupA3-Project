@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -53,4 +56,31 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, app_label):
         return True
-    
+
+class Profile(models.Model):
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('U', 'Uncertain')
+    )
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(default='profile_pictures/default.jpg', upload_to='profile_pictures')
+    first_name = models.CharField(default=None, null=True, max_length=64)
+    last_name = models.CharField(default=None, null=True, max_length=64)
+    gender = models.CharField(default=None, null=True, max_length=1, choices=GENDER_CHOICES)
+    date_of_birth = models.DateField(default=None, null=True, help_text='YYYY-MM-DD')
+    job_title = models.CharField(default=None, null=True, max_length=128)
+    passions = models.CharField(default=None, null=True, max_length=256, help_text='hiking, outdoors, cat lover')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()

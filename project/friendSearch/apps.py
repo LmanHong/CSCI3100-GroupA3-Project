@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class PostsConfig(AppConfig):
+class FrdSearchConfig(AppConfig):
     name = 'friend'

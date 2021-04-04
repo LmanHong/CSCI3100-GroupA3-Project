@@ -76,7 +76,7 @@ class RequestsManager(models.Manager):
             return request
     
     def handleRequest(self, from_user, to_user, option):
-        #
+        pass
 
 class FriendList(models.Model):
 
@@ -93,7 +93,7 @@ class FriendList(models.Model):
     objects = FriendListManager()
 
     def __str__(self):
-        return self.user1, self.friend
+        return self.user, self.friend
 
     class Meta:
         ordering = ['user']
@@ -106,8 +106,8 @@ class Requests(models.Model): #to store the request to a user from a user
         ('Y','seen'),
         ('N','not seen')
     ]
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='friend', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='users', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='receivers', on_delete=models.CASCADE)
     status  = models.CharField(max_length=1, default='N')
 
     objects = RequestsManager()

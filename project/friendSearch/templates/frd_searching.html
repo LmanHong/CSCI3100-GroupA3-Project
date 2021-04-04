@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- template for friend_searching-->
+    <h2>fill in the form and click "submit" button to find your friend!</h2>
+    <p>If you don't have any perference on hobbies and personality, just type <b>"any"</b>.</p>
+    <body>
+        <!--the form for searching friend-->
+        <form method="post" > <!--move to another interface-->
+            {% csrf_token %}
+            {% for field in SearchForm %}
+                <div>
+                    {{field.label_tag}}
+                    {{field}}
+                </div>
+                <br>
+            {% endfor %}
+            <input type ="submit" value="search">
+        </form>
+    </body>
+
+{% endblock content %}

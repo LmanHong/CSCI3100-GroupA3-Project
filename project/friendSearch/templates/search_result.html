@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{%block title%}
+    <title>Result of Search</title>
+{%endblock title%}
+
+{% block content %}
+
+    <h2>The recommanded friends list:</h2>
+    <body>                
+                {%if frdlist %}
+                    <p>There is the list of recommanded friends</p>
+                    <p>Username:<p>
+                    {% for item in frdlist %}
+                        <div>
+                            <p>{{item.username}}</p>
+                        </div>
+                    {%endfor%}
+                    <p>Type valid friend from the list above, seperate with " ,"</p>
+                    <form method='post'>
+                        {% csrf_token %}
+                        {% for field in RequestForm %}
+                            <div>{{field}}</div>
+                        {% endfor %}
+                        <input type="Submit" value="Send Request To Them" id="input">
+                        <p id='requesterror'></p>
+                    </form>
+                {%else%}
+                    <p>No results are founded, try again.</p>
+                {%endif%}
+                <button onclick="location.href='/friendSearch/frdSearch'" type = button>Go back</button>
+    </body>
+
+
+<!--jquery-->
+
+<!--script--> 
+
+
+{% endblock content %}
+
+
+

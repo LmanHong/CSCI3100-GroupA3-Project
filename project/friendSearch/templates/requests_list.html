@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{%block title%}
+    <title>Requestlist</title>
+{%endblock title%}
+
+{% block content %}
+
+    <h2>The request list:</h2>
+    <body>                
+                {%if requestlist %}
+                    {% for item in requestlist %}
+                        <div>
+                            <p>{{item.username}}</p>
+                        </div>
+                    {%endfor%}
+                    <p>Type valid friend from the list above, seperate with " ,"</p>
+                    <form method='post'>
+                        {% csrf_token %}
+                        {% for field in approvelist %}
+                            <div>{{field}}</div>
+                        {% endfor %}
+                        <input type="Submit" value="Type the username to accept it" id="input">
+                        <p id='requesterror'></p>
+                    </form>
+                {%else%}
+                    <p>There is no requests yet, waiting for others' request</p>
+                {%endif%}
+                <button onclick="location.href='/friendSearch/frdSearch'" type = button>Go back</button>
+    </body>
+
+
+<!--jquery-->
+
+<!--script--> 
+
+
+{% endblock content %}

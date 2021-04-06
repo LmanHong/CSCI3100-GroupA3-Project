@@ -1,33 +1,31 @@
-<!DOCTYPE html>
-<!--TBD-->
-<html>
-    <head>
-        <title>Recommanded_friends</title>
-    </head>
+{% extends 'base.html' %}
 
-    <h2>The recommanded friends list:</h2>
-    <body>
-        <div><p>Click "accept" or "reject"</p></div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>username</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for acct in accts%}
-                <tr>
-                    <td>{{acct.name}}</td>
-                    <td>{{acct.username}}</td>
-                    <td>
-                        <button type = "button">Accept</button>
-                        <button type = "button">Reject</button>
-                    </td>
-                </tr>
-                {%endfor%}
-            </tbody>
-        </table>
+{%block title%}
+    <title>Friendlist</title>
+{%endblock title%}
 
+{% block content %}
+
+    <h2>The request list:</h2>
+    <body>                
+                {%if friendlist %}
+                    <p>Your friend:<p>
+                    {% for friend in friendlist %}
+                        <div>
+                            <p>{{friend.username}}</p>
+                        </div>
+                        <!--putting chatting function-->
+                    {%endfor%}
+                {%else%}
+                    <p>You may try friendMatching to find your desired friend</p>
+                {%endif%}
+                <button onclick="location.href='/friendSearch/frdSearch'" >Try friendMatching</button>
     </body>
-</html>
+
+
+<!--jquery-->
+
+<!--script--> 
+
+
+{% endblock content %}

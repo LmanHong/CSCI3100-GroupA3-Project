@@ -52,10 +52,20 @@ class ChatRoomView(LoginRequiredMixin, View):
         from_user = request.user
         try:
             target_room = ChatRoom.objects.get_chatroom(int(room_name))
+            message_set = ChatMessage.objects.get_messages_from_chatroom(int(room_name))
+            message_list = [{
+                'message_id': message.id,
+                'message_string':message.message_string,
+                'message_status':message.message_status,
+                'error':message.error,
+                'sent_by':message.sent_by,
+                'sent_time':message.sent_time
+            } for message in message_set]
             if (target_room.from_user != from_user and target_room.to_user != from_user): raise ObjectDoesNotExist
             else:
                 context = {
-                    'room_name':room_name
+                    'room_name':room_name,
+                    'message_list': message_list
                 }
         except Exception as ex:
             err = "Exception of type {0} occured when creating chatroom, Arguments:\n{1!r}".format(type(ex).__name__, ex.args)

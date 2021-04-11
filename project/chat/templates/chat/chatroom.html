@@ -15,6 +15,9 @@
 <script defer src="{% static 'chat/chat_api.js' %}"></script>
 <h1>{{room_name}}</h1>
 <div class="chat-log">
+    {% for message in message_list %}
+        <p id="msg-{{message.message_id}}">{{message.sent_by}}: {{message.message_string}} ---> {{message.sent_time}}</p>
+    {% endfor %}
 </div><br>
 {% csrf_token %}
 <input type="text" name="chat-input" id="chat-input" size="100"><input id="chat-submit-btn" type="button" value="Send"><br>

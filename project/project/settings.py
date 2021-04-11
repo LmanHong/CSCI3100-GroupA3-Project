@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'account',
     'chat',
     'friendSearch',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +74,12 @@ TEMPLATES = [
 
 AUTH_USER_MODEL = 'account.Account'
 
-WSGI_APPLICATION = 'project.wsgi.application'
+ASGI_APPLICATION = 'project.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 
 # Database
@@ -111,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Hong_Kong'
 
 USE_I18N = True
 

@@ -1,13 +1,51 @@
+//Constant array of month names
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+//References of DOM objects
 const roomName = document.querySelector("h1").innerHTML;
 const chatLog = document.querySelector(".chat-log");
 const chatInput = document.getElementById("chat-input");
 const chatSubmitBtn = document.getElementById("chat-submit-btn");
-const chatReceiveBtn = document.getElementById("chat-receive-btn");
 
+//Constants for sending and receiving messages
+const wsUrl = 'ws://'+window.location.host+'/ws/chat/'+roomName+'/';
 const url = 'http://'+window.location.host+'/chat/'+roomName+'/';
 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 const msgIdPrefix = 'msg-';
 
+//WebSocket objects
+const chatSocket = new WebSocket(wsUrl);
+const isWebSocket = true;
+
+//Helper function for converting a datetime string to correct format
+const normalizedDateTime = (dateStr, hour24=false) =>{
+    let date = new Date(dateStr);
+    let month = months[date.getMonth()];
+    let time = "";
+    if (hour24) time = `${date.getHours()}:${date.getMinutes()}`;
+    else time = `${(date.getHours()%12==0?12:date.getHours()%12)}:${date.getMinutes()} ${(date.getHours()/12>0?"p.m.":"a.m.")}`;
+    return `${month} ${date.getDate()}, ${date.getFullYear()}, ${time}`;
+};
+
+//Websocket Event listener for receiving messages 
+chatSocket.onmessage = async (e) =>{
+    const data = await JSON.parse(e.data);
+    console.log(data);
+    if (data.message_status == 'msg' && document.getElementById(msgIdPrefix+data.message_id) == null){
+        let msgPara = document.createElement('p');
+        let content = `${data.sent_by}: ${data.message_string} ---> ${normalizedDateTime(data.sent_time)}`;
+        msgPara.innerHTML = content;
+        msgPara.id = msgIdPrefix+data.message_id;
+        chatLog.appendChild(msgPara);
+    }
+};
+
+//Websocket Event listener for closing connection
+chatSocket.onclose = async (e) =>{
+    console.error('ERROR: Chat Socket closed.');
+};
+
+//Helper function for sending chat messages
 const sendMessage = async (e) =>{
     let message = chatInput.value;
     if (message != ''){
@@ -17,65 +55,39 @@ const sendMessage = async (e) =>{
             'sent_time':Date.now()
         }
         console.log(message_json);
-        try{
-            let res = await fetch(url, {
-                body: JSON.stringify(message_json),
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                headers:{
-                    'content-type': 'application/json',
-                    'X-CSRFToken':csrfToken
-                },
-                method: 'POST'
-            })
-            let res_json = await res.json();
-            console.log(res_json);
-        }catch(err){
-            console.error("ERROR: ", err);
+        if (!isWebSocket){
+            //DEPRECIATED
+            //send chat messages via POST request
+            try{
+                let res = await fetch(url, {
+                    body: JSON.stringify(message_json),
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers:{
+                        'content-type': 'application/json',
+                        'X-CSRFToken':csrfToken
+                    },
+                    method: 'POST'
+                })
+                let res_json = await res.json();
+                console.log(res_json);
+            }catch(err){
+                console.error("ERROR: ", err);
+            }
+        }else{
+            //send chat messages via WebSocket
+            try{
+                chatSocket.send(JSON.stringify(message_json));
+                console.log('message sent.');
+            }catch(err){
+                console.error("ERROR: ", err);
+            }
         }
         chatInput.value = '';
     }else console.error("ERROR: Chat message cannot be empty!");
 }
 
-const receiveMessage = async (e)=>{
-    let getMsgCount = 10;
-    let request_json = {
-        'message_status':'spc',
-        'special_request':'getMessages-'+getMsgCount,
-        'sent_time':Date.now()
-    }
-    try{
-        let res = await fetch(url, {
-            body: JSON.stringify(request_json),
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers:{
-                'content-type': 'application/json',
-                'X-CSRFToken':csrfToken
-            },
-            method: 'POST'
-        });
-        let res_json = await res.json();
-        if (res_json.status){
-            messageList = res_json.message_list;
-            for (var i=0; i<res_json.message_count; i++){
-                console.log(messageList[i]);
-                if (messageList[i].message_status == 'msg' && document.getElementById(msgIdPrefix+messageList[i].message_id) == null){
-                    let msgPara = document.createElement('p');
-                    let content = `${messageList[i].sent_by}: ${messageList[i].message_string} ---> ${messageList[i].sent_time}`;
-                    msgPara.innerHTML = content;
-                    msgPara.id = msgIdPrefix+messageList[i].message_id;
-                    chatLog.appendChild(msgPara);
-                }
-            }
-        }else throw TypeError("Response Status is false!");
-    }catch(err){
-        console.error('ERROR: ', err);
-    }
-}
-
 chatSubmitBtn.addEventListener('click', sendMessage);
-chatReceiveBtn.addEventListener('click', receiveMessage);
 document.addEventListener('keyup', (e)=>{
     if (e.key == 'Enter') sendMessage();
 });

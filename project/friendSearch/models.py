@@ -41,9 +41,14 @@ class FriendListManager(models.Manager):
         # store the link of them into database if user accept
         to_user = get_user_model().objects.get(username=to_username)
         existThatRequest = Requests.objects.filter(models.Q(sender = to_user,receiver = from_user,status="N"))
-        if not existThatRequest:
-            raise ValueError("There is no request made by {}".format(from_user))
-        elif not FriendList.objects.isAlreadyFrdList(from_user,to_user):
+        existThatFriend = FriendList.objects.filter(models.Q(user=from_user,friend=to_user,status="acp")|models.Q(user=to_user,friend=from_user,status="acp"))
+        if to_user == from_user:
+            raise ValueError("The input cannot be same to the username")
+        elif existThatFriend:
+            raise ValueError("{} is already your friend".format(to_username))
+        elif not existThatRequest:
+            raise ValueError("There is no request made by {}".format(to_username))
+        else:
             friendship = self.model(
                 user = from_user,
                 friend = to_user,
@@ -58,20 +63,7 @@ class FriendListManager(models.Manager):
             friendship2.save()
             Requests.objects.filter(models.Q(sender = to_user, receiver = from_user, status="N") | models.Q(sender = from_user, receiver = to_user, status="N")).update(status="Y")
             return friendship
-        else:
-            raise ValueError("{} is already your friend".format(to_user))
-
-    #to check if the to_user is a friend to user
-    def isAlreadyFrdList(self, from_user, to_username):
-        try:
-            to_user = get_user_model().objects.get(username=to_username)
-            friend = FriendList.object('friend').filter(user=from_user,friend=to_user)
-            if len(friend) >= 1:
-                return False
-            return True
-        except:
-            print("DNE")
-            return False
+            
     
     #to return the result of query of friend
     def returnFriendList(self, user):
@@ -91,8 +83,13 @@ class RequestsManager(models.Manager):
     def createRequest(self,from_user, to_username):
         to_user = get_user_model().objects.get(username=to_username) #flow objectdoesnotexist exception
         existThatRequest = Requests.objects.filter(models.Q(sender = from_user,receiver = to_user,status="N"))
+        existThatFriend = FriendList.objects.filter(models.Q(friend = to_user))
         if existThatRequest:
             raise ValueError("You have already sent requests to {}".format(to_username))
+        elif existThatFriend:
+            raise ValueError("You are friend to {}".format(to_username))
+        elif to_user == from_user:
+            raise ValueError("The input cannot be same to the username")
         else:
             request = self.model(
                 sender = from_user,
@@ -105,7 +102,7 @@ class RequestsManager(models.Manager):
     #to handle the request--> make friend
     def handleRequest(self, to_user, from_user):
         if from_user == to_user or from_user == "" or to_user == "":
-            print("the name ofuser and friend cannot be null or same")
+            print("the name of user and friend cannot be null or same")
         else:
             Requests.objects.filter(sender = from_user, receiver=to_user).update(status = 'Y')
             friendship = FriendList.objects.createFrdList(to_user, from_user)

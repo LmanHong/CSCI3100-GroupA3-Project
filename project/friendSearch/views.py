@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import login, authenticate, logout
 from friendSearch.forms import SearchForm, RequestForm
+from django.contrib import messages
 from django.http import HttpResponse
 from .models import Requests, FriendList
 from django.core.exceptions import ObjectDoesNotExist
@@ -38,16 +39,19 @@ class FriendSearchView(View):
             friendlist = lists.split(", ") 
             modifiedlist = [name for name in friendlist if name != ""]
             if(len(modifiedlist)==0):
-                context['error'] = "invalid input"
+                messages.error(request,"The input is valid")
                 return render(request,'search_result.html',context)
             else:
                 for to_user_name in modifiedlist:
                     try:
                         Requests.objects.createRequest(user,to_user_name)
+                        messages.info(request,"request to {} is sent".format(to_user_name))
                         print("request to {} is sent".format(to_user_name))
                     except ValueError as e:
+                        messages.error(request,e)
                         print(e)
                     except ObjectDoesNotExist as e:
+                        messages.error(request,"{} does not exist".format(to_user_name))
                         print("{} does not exist".format(to_user_name))
                 return redirect('friendSearch')
         else:
@@ -59,9 +63,10 @@ class FriendListView(View):
     def get(self, request, *args, **kwargs): #to return the list of the friend
         user = request.user
         context = {}
-        friendlist = FriendList.objects.returnFriendList(user)
-        context['friendlist'] = friendlist
-        if user.is_authenticated:
+
+        if user.is_authenticated:        
+            friendlist = FriendList.objects.returnFriendList(user)
+            context['friendlist'] = friendlist
             return render(request,'frd_list.html',context)
         else:
             return redirect('home')
@@ -73,7 +78,7 @@ class FriendListView(View):
         form = RequestForm(request.POST)
         if user.is_authenticated and form.is_valid():
             lists = request.POST['usernamelist']
-            print("as",lists)
+            #print("as",lists)
             context['successful'] = "Request is sent"
             return render(request,'frd_list.html',context)
         else:
@@ -84,9 +89,10 @@ class RequestView(View):
         user = request.user
         context = {}
         context['approvelist'] = RequestForm()
-        requested_by_users = Requests.objects.returnRequest(user)
-        context['requestlist'] = requested_by_users
-        if user.is_authenticated:
+
+        if user.is_authenticated:        
+            requested_by_users = Requests.objects.returnRequest(user)
+            context['requestlist'] = requested_by_users
             return render(request,'requests_list.html', context)
         else:
             return redirect('home')
@@ -101,17 +107,17 @@ class RequestView(View):
             userlist = lists.split(", ")
             modifiedlist = [name for name in userlist if name != ""]
             if(len(modifiedlist)==0):
-                context['error'] = "invalid input"
+                messages.error(request,"Invalid Input")
                 return redirect('request')
             else:
                 for to_user_name in modifiedlist:
                     try:
                         FriendList.objects.createFrdList(user,to_user_name)
-                        print("friend to {} is made".format(to_user_name))
+                        messages.info(request,"friend to {} is made".format(to_user_name))
                     except ValueError as e:
-                        print(e)
+                        messages.error(request,e)
                     except ObjectDoesNotExist as e:
-                        print("{} does not exist")
+                        messages.error(request,"{} does not exist".format(to_user_name))
                 return redirect('request')
         else:
             return redirect('request')

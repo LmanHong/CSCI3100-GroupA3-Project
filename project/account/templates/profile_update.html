@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Update Profile
+{% endblock title %}
+
 {% block content %}
 
 <h2>Edit Profile</h2>
@@ -12,7 +16,7 @@
             {{field.label_tag}}
             {{field}}
             {% if field.help_text %}
-                <div style="color: grey;">{{field.help_text}}</div>
+                <div style="color: grey;">({{field.help_text}})</div>
             {% endif %}
         </p>
     {% endfor %}

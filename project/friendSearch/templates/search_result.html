@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {%block title%}
-    <title>Result of Search</title>
+    Result of Search
 {%endblock title%}
 
 {% block content %}
@@ -14,6 +14,7 @@
                     {% for item in frdlist %}
                         <div>
                             <p>{{item.username}}</p>
+                            <p>{{item.first_name}}</p>
                         </div>
                     {%endfor%}
                     <p>Type valid friend from the list above, seperate with " ,"</p>
@@ -23,7 +24,6 @@
                             <div>{{field}}</div>
                         {% endfor %}
                         <input type="Submit" value="Send Request To Them" id="input">
-                        <p id='requesterror'></p>
                     </form>
                 {%else%}
                     <p>No results are founded, try again.</p>

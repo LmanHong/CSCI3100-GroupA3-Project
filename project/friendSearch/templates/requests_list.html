@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 
 {%block title%}
-    <title>Requestlist</title>
+    Requestlist
 {%endblock title%}
 
 {% block content %}
-
-    <h2>The request list:</h2>
+    {%if messages%}
+        {%for message in messages%}
+            {%if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                <p>Succ:{{message}}</p>
+            {%else%}
+                <p>Error:{{message}}</p>
+            {%endif%}
+        {%endfor%}
+    {%endif%}
+    
     <body>                
+        <div class="container">
+            <h2>The request list:</h2>
                 {%if requestlist %}
                     {% for item in requestlist %}
                         <div>
@@ -27,6 +37,7 @@
                     <p>There is no requests yet, waiting for others' request</p>
                 {%endif%}
                 <button onclick="location.href='/friendSearch/frdSearch'" type = button>Go back</button>
+        </div>
     </body>
 
 

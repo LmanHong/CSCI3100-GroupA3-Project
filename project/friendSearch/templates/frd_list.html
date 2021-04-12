@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 
 {%block title%}
-    <title>Friendlist</title>
+    Friendlist
 {%endblock title%}
 
 {% block content %}
-
-    <h2>The request list:</h2>
+<div class="container">
+    <div class="btn-group" role="group">
+        <a class="btn btn-secondary" href='/account/profile'>Go Back to Profile</a>
+        <a class="btn btn-secondary" href='/friendSearch/request'>Check request</a>
+        <a class="btn btn-secondary" href='/friendSearch/frdList'>Find your friend</a>
+    </div>
+    <h2>The friend list:</h2>
     <body>                
                 {%if friendlist %}
                     <p>Your friend:<p>
@@ -19,9 +24,9 @@
                 {%else%}
                     <p>You may try friendMatching to find your desired friend</p>
                 {%endif%}
-                <button onclick="location.href='/friendSearch/frdSearch'" >Try friendMatching</button>
+                <button class = "btn btn-secondary" onclick="location.href='/friendSearch/frdSearch'" >Try friendMatching</button>
     </body>
-
+</div>
 
 <!--jquery-->
 

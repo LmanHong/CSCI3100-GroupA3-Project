@@ -1,12 +1,29 @@
 {% extends 'base.html' %}
-
+{%block title%}
+    friendSearch
+{% endblock%}
 {% block content %}
 <!-- template for friend_searching-->
+    <div class = "container">
+    <div class="btn-group" role="group">
+        <a class="btn btn-secondary" href='/account/profile'>Go Back to Profile</a>
+        <a class="btn btn-secondary" href='/friendSearch/request'>Check request</a>
+        <a class="btn btn-secondary" href='/friendSearch/frdList'>Find your friend</a>
+    </div>
+    {%if messages%}
+        {%for message in messages%}
+            {%if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                <p>Succ:{{message}}</p>
+            {%else%}
+                <p>Error:{{message}}</p>
+            {%endif%}
+        {%endfor%}
+    {%endif%}
     <h2>fill in the form and click "submit" button to find your friend!</h2>
     <p>You can pick more than one preferences, just seperated them with <b>", "</b>.</p>
     <body>
         <!--the form for searching friend-->
-        <form method="post" > <!--move to another interface-->
+        <form method="post"> <!--move to another interface-->
             {% csrf_token %}
             {% for field in SearchForm %}
                 <div>
@@ -15,10 +32,10 @@
                 </div>
                 <br>
             {% endfor %}
-            <input type ="submit" value="search">
+            <input class="btn btn-secondary" type ="submit" value="search">
         </form>
-        <button onclick="location.href='/account/profile'">Go back to Profile</button>
-        <button onclick="location.href='/friendSearch/request'">Check request</button>
     </body>
+    </div>
+
 
 {% endblock content %}

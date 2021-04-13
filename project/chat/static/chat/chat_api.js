@@ -42,6 +42,7 @@ chatSocket.onmessage = async (e) =>{
 
 //Websocket Event listener for closing connection
 chatSocket.onclose = async (e) =>{
+    isWebSocket = false;
     console.error('ERROR: Chat Socket closed.');
 };
 
@@ -55,26 +56,7 @@ const sendMessage = async (e) =>{
             'sent_time':Date.now()
         }
         console.log(message_json);
-        if (!isWebSocket){
-            //DEPRECIATED
-            //send chat messages via POST request
-            try{
-                let res = await fetch(url, {
-                    body: JSON.stringify(message_json),
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers:{
-                        'content-type': 'application/json',
-                        'X-CSRFToken':csrfToken
-                    },
-                    method: 'POST'
-                })
-                let res_json = await res.json();
-                console.log(res_json);
-            }catch(err){
-                console.error("ERROR: ", err);
-            }
-        }else{
+        if (isWebSocket){
             //send chat messages via WebSocket
             try{
                 chatSocket.send(JSON.stringify(message_json));
@@ -82,6 +64,8 @@ const sendMessage = async (e) =>{
             }catch(err){
                 console.error("ERROR: ", err);
             }
+        }else{
+            throw TypeError("WebSocket is not available.");
         }
         chatInput.value = '';
     }else console.error("ERROR: Chat message cannot be empty!");

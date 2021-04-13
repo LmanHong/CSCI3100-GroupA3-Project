@@ -3,7 +3,11 @@ from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from .models import ChatRoom, ChatMessage
+from friendSearch.models import FriendList
+
 
 import re
 import json
@@ -13,15 +17,23 @@ LOGIN='/account/login/'
 class HomeView(LoginRequiredMixin, View):
     login_url=LOGIN
     def get(self, request, *args, **kwargs):
-        return render(request, 'chat/index.html')
+        user = request.user
+        friendList = FriendList.objects.returnFriendList(user=user)
+        print(len(friendList))
+        context = {
+            'friendList': friendList,
+            'friendCount': len(friendList)
+        }
+        return render(request, 'chat/index.html', context)
 
     def post(self, request, *args, **kwargs):
         user = request.user
         if user.is_authenticated:
             body = json.loads(request.body.decode('utf-8'))
-            to_username = body["to_username"]
+            to_user_id = body["to_user_id"]
             try:
-                new_room = ChatRoom.objects.create_chatroom(from_username=user.username, to_username=to_username)
+                to_user = get_user_model().objects.get(id=to_user_id)
+                new_room = ChatRoom.objects.create_chatroom(from_username=user.username, to_username=to_user.username)
                 responseBody = {
                     'status':True,
                     'room_name':new_room.room_name
@@ -47,6 +59,7 @@ class HomeView(LoginRequiredMixin, View):
 class ChatRoomView(LoginRequiredMixin, View):
     login_url=LOGIN
 
+    @xframe_options_sameorigin
     def get(self, request, *args, **kwargs):
         room_name = self.kwargs['room_name']
         from_user = request.user

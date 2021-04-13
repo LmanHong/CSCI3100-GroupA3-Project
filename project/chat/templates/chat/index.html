@@ -1,50 +1,29 @@
 {% extends './base.html' %}
+{% load static %}
 
-{% block title %} <title>Enter a chatroom</title> {% endblock title %}
+{% block title %} 
+<title>CUHKTinder - LiveChat</title> 
+<link rel="stylesheet" href="{% static 'chat/home_style.css' %}">
+{% endblock title %}
 
 {% block content %}
-
-<p>Start a chat with user</p><br>
 {% csrf_token %}
-<input type="text" name="username" id="username"><input id="enterBtn" type="button" value="Enter"><br>
-<p id='error'></p>
+<div class="friendListDiv">
+    <p>Friend List</p>
+    {% if friendCount > 0 %}
+    {% for friend in friendList %}
+        <a href="#!" id="{{friend.id}}" class="friendA">{{friend.username}}</a><br>
+    {% endfor %}
+    {% else %}
+        <span>You currently have no friend, quickly</span> 
+        <a href="/friendSearch/frdSearch/">search for some new friends!</a>
+    {% endif %}
+</div>
 
-<script>
-    const url = 'http://'+window.location.host + '/chat/';
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const usernameRef = document.getElementById('username');
-    const enterBtn = document.getElementById('enterBtn');
-    const errorRef = document.getElementById('error');
+<div class="chatroomDiv">
+    <span class="placeholder">Click on a friend's name to start chatting!</span>
+    <iframe frameborder="0" class="chatroomFrame" style="display: none;"></iframe>
+</div>
 
-    var isProcessing = false
-
-    enterBtn.addEventListener('click', e=>{
-        if (!isProcessing){
-            if (usernameRef.value != ''){
-                isProcessing = true;
-                data = {
-                    'to_username':usernameRef.value
-                }
-                fetch(url, {
-                    body: JSON.stringify(data),
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers:{
-                        'content-type': 'application/json',
-                        'X-CSRFToken':csrfToken
-                    },
-                    method: 'POST'
-                }).then(async res=>{
-                    let ret = await res.json();
-                    console.log(ret)
-                    if (ret.status && ret.room_name) window.location.href = url + ret.room_name;
-                    else{
-                        isProcessing = false;
-                        errorRef.innerHTML = (ret.error?ret.error:'Unknown Error!');
-                    }
-                })
-            }else errorRef.innerHTML = 'Username cannot be empty.'
-        }else errorRef.innerHTML = "Processing last request, please do not click the button to frequently."
-    });
-</script>
+<script defer src="{% static 'chat/home.js' %}"></script>
 {% endblock content %}

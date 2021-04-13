@@ -72,7 +72,7 @@ class FriendListManager(models.Manager):
         nlist = Account.objects.select_related('id').filter(id__in = friend_id_list).values('username','id')
         #print(nlist)
         return nlist
-    #to return the foeign key(the friend.id)
+    #to return the foreign key(the friend.id)
     def returnFriendID(self,user):
         friend_id_list = list(FriendList.objects.filter(models.Q(user=user)).values_list('friend',flat=True))
         nlist = list(Account.objects.select_related('id').filter(id__in = friend_id_list).values_list('id',flat=True))
@@ -83,7 +83,8 @@ class RequestsManager(models.Manager):
     def createRequest(self,from_user, to_username):
         to_user = get_user_model().objects.get(username=to_username) #flow objectdoesnotexist exception
         existThatRequest = Requests.objects.filter(models.Q(sender = from_user,receiver = to_user,status="N"))
-        existThatFriend = FriendList.objects.filter(models.Q(friend = to_user))
+        existThatFriend = FriendList.objects.filter(models.Q(user= from_user,friend = to_user)|models.Q(user= to_user,friend = from_user))
+
         if existThatRequest:
             raise ValueError("You have already sent requests to {}".format(to_username))
         elif existThatFriend:

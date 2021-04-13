@@ -6,27 +6,38 @@ Register
 
 {% block content %}
 
-<h2>Register</h2>
+<div class="container">
+    <p class="text-center header">Register</p>
 
-<form method="post">
-    {% csrf_token %}
-
-    {% for field in registration_form %}
-        <p>
-            {{field.label_tag}}
-            {{field}}
-            {% if field.help_text %}
-                <div style="color: grey;">{{field.help_text}}</div>
-            {% endif %}
-
-            {% for error in field.errors %}
-            <div style="color: red;">{{error}}</div>
-            {% endfor %}
-        </p>
-    {% endfor %}
-
-    <input type="hidden" name="next" value="{{request.GET.next}}">
-    <button type="submit">Register</button>
-</form>
+    <form method="post">
+        {% csrf_token %}
+    
+        {% for field in registration_form %}
+            <div class="form-group">
+                {{field.label_tag}}
+                {{field}}
+                {% if field.help_text %}
+                    <div class="help-text" style="color: grey;">{{field.help_text}}</div>
+                {% endif %}
+    
+                {% for error in field.errors %}
+                <div style="color: red;">{{error}}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    
+        <input type="hidden" name="next" value="{{request.GET.next}}">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
 
 {% endblock content %}
+
+{% block style %}
+    .header {
+        font-size: 25px;
+    }
+    .help-text {
+        font-size: 15px;
+    }
+{% endblock style %}

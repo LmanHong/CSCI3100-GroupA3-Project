@@ -6,33 +6,44 @@ Update Profile
 
 {% block content %}
 
-<h2>Edit Profile</h2>
+<div class="container">
+    <p class="text-center header">Edit Profile</p>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    {% for field in profile_update_form %}
-        <p>
-            {{field.label_tag}}
-            {{field}}
-            {% if field.help_text %}
-                <div style="color: grey;">({{field.help_text}})</div>
-            {% endif %}
-        </p>
-    {% endfor %}
-
-    {% for field in profile_update_form %}
-        {% for error in field.errors %}
-        <div style="color: red;">{{error}}</div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    
+        {% for field in profile_update_form %}
+            <div class="form-group">
+                {{field.label_tag}}
+                {{field}}
+                {% if field.help_text %}
+                    <div style="color: grey;">({{field.help_text}})</div>
+                {% endif %}
+            </div>
         {% endfor %}
-    {% endfor %}
-
-    {% if profile_update_form.non_field_errors %}
-    <div style="color: red;">{{profile_update_form.non_field_errors}}</div>
-    {% endif %}
-
-    <input type="hidden" name="next" value="{{request.GET.next}}">
-    <button type="submit">Edit</button>
-</form>
+    
+        {% for field in profile_update_form %}
+            {% for error in field.errors %}
+            <div style="color: red;">{{error}}</div>
+            {% endfor %}
+        {% endfor %}
+    
+        {% if profile_update_form.non_field_errors %}
+        <div style="color: red;">{{profile_update_form.non_field_errors}}</div>
+        {% endif %}
+    
+        <input type="hidden" name="next" value="{{request.GET.next}}">
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+</div>
 
 {% endblock content %}
+
+{% block style %}
+    .header {
+        font-size: 25px;
+    }
+    .help-text {
+        font-size: 15px;
+    }
+{% endblock style %}

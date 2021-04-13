@@ -29,6 +29,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('chat/', include('chat.urls')),
     path('friendSearch/',include('friendSearch.urls')),
+    
     path('mainpage/', include('mainpage.urls')),
 ]
 

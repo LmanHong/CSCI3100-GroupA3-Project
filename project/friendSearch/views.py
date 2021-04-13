@@ -59,30 +59,30 @@ class FriendSearchView(View):
             return render(request,'search_result.html', context)
         #to get the information of the form and send to the dbs
 
-class FriendListView(View):
-    def get(self, request, *args, **kwargs): #to return the list of the friend
-        user = request.user
-        context = {}
-
-        if user.is_authenticated:        
-            friendlist = FriendList.objects.returnFriendList(user)
-            context['friendlist'] = friendlist
-            return render(request,'frd_list.html',context)
-        else:
-            return redirect('home')
-    
-    def post(self, request, *args, **kwargs): #for chatting?
-        #to check if the user click accept or reject --> if yes: add to frdlist (storing in dbs)
-        context = {}
-        user = request.user
-        form = RequestForm(request.POST)
-        if user.is_authenticated and form.is_valid():
-            lists = request.POST['usernamelist']
-            #print("as",lists)
-            context['successful'] = "Request is sent"
-            return render(request,'frd_list.html',context)
-        else:
-            return redirect('home')
+#class FriendListView(View):
+#    def get(self, request, *args, **kwargs): #to return the list of the friend
+#        user = request.user
+#        context = {}
+#
+#        if user.is_authenticated:        
+#            friendlist = FriendList.objects.returnFriendList(user)
+#            context['friendlist'] = friendlist
+#            return render(request,'frd_list.html',context)
+#        else:
+#            return redirect('home')
+#    
+#    def post(self, request, *args, **kwargs): #for chatting?
+#        #to check if the user click accept or reject --> if yes: add to frdlist (storing in dbs)
+#        context = {}
+#        user = request.user
+#        form = RequestForm(request.POST)
+#        if user.is_authenticated and form.is_valid():
+#            lists = request.POST['usernamelist']
+#            #print("as",lists)
+#            context['successful'] = "Request is sent"
+#            return render(request,'frd_list.html',context)
+#        else:
+#            return redirect('home')
 
 class RequestView(View):
     def get(self, request, *args, **kwargs):

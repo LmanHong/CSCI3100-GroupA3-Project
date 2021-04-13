@@ -5,7 +5,25 @@
 {%endblock title%}
 
 {% block content %}
-
+    {%load static%}
+        <link rel="stylesheet" href={%static "css/design.css"%}>
+    <header> <!--reference: bootstrap-->
+        <nav class="navbar navbar-expand-md navbar-secondary navbar-1 bg-secondary">            
+            <a href = '/mainpage'>
+            {%load static%}
+                <img src={% static "/images/icon.png"%} style="width:50px;height:50px;">         
+            </a>
+            <button class = "navbar-toggler" type="button" data-toggle="collapse" data-target="#lists" aria-expanded="false" aria-controls="lists" aria-label="Toggle navigation">
+                <span style="color: white">...</span>
+            </button>
+            <div class="collapse navbar-collapse ml-auto" id="lists">            
+                <a class="nav-item nav-link" href='/account/profile'>Profile</a>
+                <a class="nav-item nav-link" href='/friendSearch/request'>Request</a>
+                <a class="nav-item nav-link" href='/friendSearch/frdSearch'>Find Friend</a>
+                <a class="nav-item nav-link" href='/chat'>Chat</a>
+            </div>
+        </nav>
+    </header>
     <h2>The recommanded friends list:</h2>
     <body>                
                 {%if frdlist %}
@@ -14,7 +32,6 @@
                     {% for item in frdlist %}
                         <div>
                             <p>{{item.username}}</p>
-                            <p>{{item.first_name}}</p>
                         </div>
                     {%endfor%}
                     <p>Type valid friend from the list above, seperate with " ,"</p>

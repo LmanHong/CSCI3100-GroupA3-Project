@@ -2,39 +2,60 @@
 {%block title%}
     friendSearch
 {% endblock%}
+
 {% block content %}
+    {%load static%}
+        <link rel="stylesheet" href={%static "css/design.css"%}>
 <!-- template for friend_searching-->
-    <div class = "container">
-    <div class="btn-group" role="group">
-        <a class="btn btn-secondary" href='/account/profile'>Go Back to Profile</a>
-        <a class="btn btn-secondary" href='/friendSearch/request'>Check request</a>
-        <a class="btn btn-secondary" href='/friendSearch/frdList'>Find your friend</a>
-    </div>
-    {%if messages%}
-        {%for message in messages%}
-            {%if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-                <p>Succ:{{message}}</p>
-            {%else%}
-                <p>Error:{{message}}</p>
-            {%endif%}
-        {%endfor%}
-    {%endif%}
-    <h2>fill in the form and click "submit" button to find your friend!</h2>
-    <p>You can pick more than one preferences, just seperated them with <b>", "</b>.</p>
-    <body>
-        <!--the form for searching friend-->
-        <form method="post"> <!--move to another interface-->
-            {% csrf_token %}
-            {% for field in SearchForm %}
-                <div>
-                    {{field.label_tag}}
-                    {{field}}
-                </div>
-                <br>
-            {% endfor %}
-            <input class="btn btn-secondary" type ="submit" value="search">
-        </form>
-    </body>
+    {% load static %}
+    <header> <!--reference: bootstrap-->
+        <nav class="navbar navbar-expand-md navbar-secondary navbar-1 bg-secondary">            
+            <a href = '/mainpage'>
+                <img src={% static "/images/icon.png"%} style="width:50px;height:50px;">         
+            </a>
+            <button class = "navbar-toggler" type="button" data-toggle="collapse" data-target="#lists" aria-expanded="false" aria-controls="lists" aria-label="Toggle navigation">
+                <span style="color: white">...</span>
+            </button>
+            <div class="collapse navbar-collapse ml-auto" id="lists">            
+                <a class="nav-item nav-link" href='/account/profile'>Profile</a>
+                <a class="nav-item nav-link" href='/friendSearch/request'>Request</a>
+                <a class="nav-item nav-link" href='/friendSearch/frdSearch'>Find Friend</a>
+                <a class="nav-item nav-link" href='/chat'>Chat</a>
+            </div>
+        </nav>
+    </header>
+    <div class = "container"> <!--show message-->
+        {%if messages%}
+            {%for message in messages%}
+                {%if message.level == DEFAULT_MESSAGE_LEVELS.INFO %} <!--reference: the bootstrap-->
+                    <div class="alert alert-success mb-0 alert-dismissible fade show" role="alert">{{message}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span> 
+                    </div>
+                {%else%}
+                    <div class="alert alert-danger mb-0 alert-dismissible fade show" role="alert"><b>Error: </b>{{message}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </div>
+                {%endif%}
+          {%endfor%}
+        {%endif%}
+        <h3>Fill in the form and click "submit" button to find your friend!</h3>
+        <p>You can pick more than one preferences, just seperated them with <b>", "</b>.</p>
+        <body>
+            <!--the form for searching friend-->
+            <form method="post"> <!--move to another interface-->
+                {% csrf_token %}
+                {% for field in SearchForm %}
+                    <div>
+                        {{field.label_tag}}
+                        {{field}}
+                    </div>
+                    <br>
+                {% endfor %}
+                <input class="btn btn-secondary" type ="submit" value="search">
+            </form>
+        </body>
     </div>
 
 

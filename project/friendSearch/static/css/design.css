@@ -1,3 +1,6 @@
+/*
+to edit the color of value in navbar
+*/
 .nav-item , .nav-link, .navbar-secondary{
     color: white;
 }
@@ -5,3 +8,5 @@
 .nav-item:hover , .nav-link:hover, .navbar-secondary:hover{
     color: yellow;
 }
+
+

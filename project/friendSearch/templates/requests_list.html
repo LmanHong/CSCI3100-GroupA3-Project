@@ -51,7 +51,7 @@
                             <p>{{item.username}}</p>
                         </div>
                     {%endfor%}
-                    <p>Type valid friend from the list above, seperate with ", "</p>
+                    <p>Type valid friend from the list above, seperate with <b>", "</b></p>
                     <form method='post'>
                         {% csrf_token %}
                         {% for field in approvelist %}
@@ -60,15 +60,9 @@
                         <input type="Submit" value="Type the username to accept it" id="input">
                     </form>
                 {%else%}
-                    <p>There is no requests yet, waiting for others' request</p>
+                    <p>There is no requests yet, you may wait other user or make a new search</p>
                 {%endif%}
         </div>
     </body>
-
-
-<!--jquery-->
-
-<!--script--> 
-
 
 {% endblock content %}

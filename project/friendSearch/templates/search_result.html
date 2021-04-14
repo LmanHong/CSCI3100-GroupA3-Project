@@ -24,8 +24,10 @@
             </div>
         </nav>
     </header>
-    <h2>The recommanded friends list:</h2>
+    
     <body>                
+            <div class="container">
+            <h3>The recommanded friends list:</h3>
                 {%if frdlist %}
                     <p>There is the list of recommanded friends</p>
                     <p>Username:<p>
@@ -40,20 +42,13 @@
                         {% for field in RequestForm %}
                             <div>{{field}}</div>
                         {% endfor %}
-                        <input type="Submit" value="Send Request To Them" id="input">
+                        <input type="Submit" class="btn btn-secondary" value="Send Request To Them" id="input">
                     </form>
                 {%else%}
                     <p>No results are founded, try again.</p>
                 {%endif%}
-                <button onclick="location.href='/friendSearch/frdSearch'" type = button>Go back</button>
+            </div>
     </body>
-
-
-<!--jquery-->
-
-<!--script--> 
-
-
 {% endblock content %}
 
 

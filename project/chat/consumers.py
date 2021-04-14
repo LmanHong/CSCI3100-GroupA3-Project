@@ -12,6 +12,11 @@ class ChatConsumer(WebsocketConsumer):
         self.user = self.scope["user"]
         self.group_name = "group_{}".format(self.room_name)
 
+        ChatRoom.objects.set_online_status(self.room_name, self.user.username, "Online")
+        room = ChatRoom.objects.get_chatroom(self.room_name)
+        to_username = room.from_user.username if self.user.username == room.to_user.username else room.to_user.username
+        to_user_status = room.from_user_status if self.user.username == room.to_user.username else room.to_user_status
+
 
         #Add current chat user channel to the group
         async_to_sync(self.channel_layer.group_add)(
@@ -21,6 +26,20 @@ class ChatConsumer(WebsocketConsumer):
 
         #Accepts the incoming websocket connection
         self.accept()
+
+        #Get others' online status
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name,
+            {
+                'type':'spc',
+                'new_msg':{
+                    'message_string': {'online_status': 'Online' if to_user_status else 'Offline'},
+                    'message_status': 'spc',
+                    'sent_time': str(datetime.now()),
+                    'sent_by': to_username,
+                }
+            }
+        )
 
         #Broadcase to others
         async_to_sync(self.channel_layer.group_send)(
@@ -37,6 +56,9 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def disconnect(self, close_code):
+        #Set Online status to Offline
+        ChatRoom.objects.set_online_status(self.room_name, self.user.username, 'Offline')
+        
         #Broadcase to others
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,

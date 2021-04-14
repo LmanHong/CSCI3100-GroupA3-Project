@@ -10,17 +10,17 @@ class ChatRoomManager(models.Manager):
         elif room_name:
             return self.get_queryset().get(room_name=room_name)
         else:
+            from_user = get_user_model().objects.get(username=from_username)
+            to_user = get_user_model().objects.get(username=to_username)
             if not exact:
-                room = self.get_all_chatrooms_by_user(from_username, query=self.get_all_chatrooms_by_user(to_username))
-                if len(room) == 0:
+                rooms = self.get_queryset().filter((models.Q(from_user=from_user) & models.Q(to_user=to_user)) | (models.Q(from_user=to_user) & models.Q(to_user=from_user)))
+                if len(rooms) == 0:
                     raise ObjectDoesNotExist
-                elif len(room) > 1:
+                elif len(rooms) > 1:
                     raise MultipleObjectsReturned
                 else:
-                    return room[0]
+                    return rooms[0]
             else:
-                from_user = get_user_model().objects.get(username=from_username)
-                to_user = get_user_model().objects.get(username=to_user)
                 return self.get_queryset().get(from_user=from_user, to_user=to_user)
     
     def get_all_chatrooms_by_user(self, from_username, query=None):
@@ -51,6 +51,22 @@ class ChatRoomManager(models.Manager):
                 )
                 new_room.save()
                 return new_room
+
+    def set_online_status(self, room_name, username, status):
+        if room_name == "" or username == "" or status == "":
+            raise ValueError("All arguments must be non-empty")
+        elif status != "Online" and status != "Offline":
+            raise ValueError("Online Status must either be 'Online' or 'Offline'")
+        else:
+            room = self.get_chatroom(room_name=room_name)
+            if username == room.from_user.username:
+                room.from_user_status = True if status == 'Online' else False
+            elif username == room.to_user.username:
+                room.to_user_status = True if status == 'Online' else False
+            else:
+                raise ValueError("User is not in this chatroom")
+            room.save()
+
 
 
     def create(self, from_username, to_username):
@@ -116,9 +132,9 @@ class ChatMessageManager(models.Manager):
 class ChatRoom(models.Model):
     room_name = models.AutoField(primary_key=True)
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='from_user_set', on_delete=models.CASCADE)
-    from_user_online = models.BooleanField(default=False)
+    from_user_status = models.BooleanField(default=False)
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='to_user_set' ,on_delete=models.CASCADE)
-    to_user_online = models.BooleanField(default=False)
+    to_user_status = models.BooleanField(default=False)
 
     objects = ChatRoomManager()
 

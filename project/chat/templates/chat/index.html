@@ -9,8 +9,15 @@
 
 {% block content %}
 {% csrf_token %}
+<!--Fixed button for opening side menu for small window size-->
+<button class="fixed-slide-menu-btn shadow d-block d-sm-none"><span class="material-icons">contacts</span></button>
+
+<!--Overlay Div for dimming background when opening the slide menu-->
+<div class="overlay"></div>
+
+<!--Chat Container-->
 <div class="d-flex flex-row chat-container">
-    <div class="friendListDiv d-none d-sm-flex flex-column mb-auto vh-100">
+    <div class="friendListDiv d-flex flex-column mb-auto vh-100">
         <div class="friendlist-header d-flex flex-row">
             <img src="{{user.profile.image.url}}" alt="{{user.profile.image.url}}" class="profile-image" id="user-profile-image">
             <div class="dropdown">
@@ -20,6 +27,7 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownBtn">
                     <li><a href="/account/profile/" class="dropdown-item">My Profile</a></li>
                     <li><a href="/friendSearch/frdSearch/" class="dropdown-item">Friend Search</a></li>
+                    <li><a href="/" class="dropdown-item">Home Page</a></li>
                 </ul>
             </div>
         </div>
@@ -30,7 +38,7 @@
                 <img src="{{friend.profile.image.url}}" alt="{{frined.profile.image.url}}" class="profile-image">
                 <div class="text-container d-flex flex-column">
                     <span class="friend-name">{{friend.username}}</span>
-                    <span class="friend-last-mesage">Last message goes here</span>
+                    <span class="friend-last-message">Last message goes here and this is used to test</span>
                 </div>
             </a></li>
             {% endfor %}

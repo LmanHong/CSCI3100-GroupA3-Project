@@ -8,8 +8,11 @@ const friendsRef = document.querySelectorAll('.friendA');
 const chatroomFrameRef = document.querySelector('.chatroomFrame');
 const placeholderSpanRef = document.querySelector('.placeholder');
 const userProfileImageRef = document.getElementById('user-profile-image');
+const slideMenuBtn = document.querySelector('.fixed-slide-menu-btn');
+const overlayDiv = document.querySelector('.overlay');
 
 var isProcessing = false;
+var isMenuOpened = false;
 
 const getChatroom = async (toUserId) =>{
     try{
@@ -47,7 +50,7 @@ const getChatroom = async (toUserId) =>{
 };
 
 const renderChatroom = async (e)=>{
-    let toUserId = (e.target.parentElement.nodeName == "A"?e.target.parentNode.id:e.target.parentNode.parentNode.id);
+    let toUserId = (e.target.nodeName == "A"?e.target.id:(e.target.parentElement.nodeName == "A"?e.target.parentNode.id:e.target.parentNode.parentNode.id));
     console.log("friend id: ", toUserId);
     if (isProcessing){
         console.error("ERROR: Another chatroom is requesting.");
@@ -59,10 +62,20 @@ const renderChatroom = async (e)=>{
             chatroomFrameRef.src = url + roomName.room_name + "/";
             placeholderSpanRef.style.display = "none";
             chatroomFrameRef.style.display = "block";
+            if (window.innerWidth<=576) toggleSlideMenu(); 
         }else{
             console.log("Got error: ", roomName.error);
         }
         isProcessing = false;
+
+    }
+};
+
+const toggleSlideMenu = ()=>{
+    if (window.innerWidth<=576){
+        overlayDiv.style.backgroundColor = (isMenuOpened?"rgba(0, 0, 0, 0)":"rgba(0, 0, 0, 0.4)");
+        friendListDiv.style.width = (isMenuOpened?"0px":"260px");
+        isMenuOpened = !isMenuOpened;
     }
 };
 
@@ -73,3 +86,5 @@ friendsRef.forEach((friendRef)=>{
 userProfileImageRef.addEventListener('click', (e)=>{
     window.location.href = 'http://'+window.location.host+'/account/profile/';
 });
+
+slideMenuBtn.addEventListener('click', toggleSlideMenu);

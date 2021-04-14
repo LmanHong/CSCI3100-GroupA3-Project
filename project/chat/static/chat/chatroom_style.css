@@ -6,7 +6,7 @@ html{
     --palepink: #FACDD6;
     --verypalepink: #FAE7EC;
     --middlegrey: #424242;
-    font-size: 2vw;
+    font-size: 16px;
 }
 
 body{
@@ -16,33 +16,29 @@ body{
 .chat-header{
     position: absolute;
     background-color: var(--lightpink);
-    height: 12.5vh;
+    height: 59px;
     width: 100%;
     top: 0;
-    padding-left:2.5vh;
-    padding-top:1.25vh;
+    padding: 10px 16px;
     font-size: 3vh;
 }
 
 .chat-header .profile-image{
-    height: 10vh;
-    width: 10vh;
+    height: 40px;
+    width: 40px;
     border-style: none;
     border-radius: 50%;
 }
 
 .chat-header ul{
-    height: 90px;
+    height: 40px;
     top: 0;
+    margin-top: -10px;
     list-style: none;
 }
 
-.chat-header li:first-child{
-    margin-top:1vh;
-}
-
 .chat-header li:last-child{
-    margin-top: -1vh;
+    margin-top: -15px;
 }
 
 .chat-header span{
@@ -50,33 +46,34 @@ body{
 }
 
 .chat-header .to-username{
-    font-size: 1em;
+    font-size: 16px;
 }
 
 .chat-header .online-status{
-    font-size: 0.5em;
+    font-size: 13px;
 }
 
 .chat-log{
     background-color: var(--verypalepink);
     position: absolute;
-    top: 12.5vh;
-    bottom: 10vh;
+    top: 59px;
+    bottom: 62px;
     width: 100%;
-    height: 77.5vh;
+    height: calc(100vh - 121px);
     padding-bottom: 1.25vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .chat-log .chat-message{
-    max-width: 40%;
-    font-size: 2vw;
+    max-width: 70%;
+    font-size: 16px;
     border-style: none;
     border-radius: 10px;
     padding-left: 10px;
     padding-right: 10px;
     margin-top: 10px;
+    word-wrap: break-word;
 }
 
 .chat-log .chat-message.left{
@@ -96,7 +93,7 @@ body{
 }
 
 .chat-log .chat-message span{
-    font-size: 0.15em;
+    font-size: 10px;
     color: grey;
 }
 
@@ -111,19 +108,21 @@ body{
 .chat-footer{
     position:absolute;
     background-color: var(--lightpink);
-    height: 10vh;
+    min-height: 62px;
     width: 100%;
     bottom:0;
-    font-size: 5vh;
+    padding: 5px 10px;
+}
+
+.chat-footer > div.h-100.px-3{
+    padding: 10px;
 }
 
 .chat-footer a{
     text-decoration: none;
     background-color: rgba(0, 0, 0, 0);
     color: white;
-    margin-top:3.3vh;
-    margin-left:3vw;
-    font-size: 3vh;
+    font-size: 30px;
     width: fit-content;
     height: fit-content;
     float: left;
@@ -133,15 +132,12 @@ body{
 #chat-input{
     border-style: none;
     outline: none;
-    height: fit-content;
+    height: 30px;
+    padding: 0 15px;
+    margin-left: 20px;
     float: left;
     width: 80%;
-    border-radius: 10vw;
-    padding-left: 2vw;
-    padding-right: 2vw;
-    margin-top: 2.2vh;
-    margin-left:3vw;
-    font-size: 3vh;
+    border-radius: 20px;
     background-color: white;
 }
 
@@ -151,13 +147,12 @@ body{
     background-color: rgba(0, 0, 0, 0);
     color: white;
     float: left;
-    font-size: 3vh;
-    margin-top: 3.3vh;
-    margin-left:3vw;
+    margin-left: 10px;
     justify-content: center;
     align-items: center;
-    width: 3vh;
-    height: 3vh;
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
 }
 #chat-submit-btn:focus{
     outline: none;

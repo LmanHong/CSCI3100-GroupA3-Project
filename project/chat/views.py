@@ -34,6 +34,7 @@ class HomeView(LoginRequiredMixin, View):
             to_user_id = body["to_user_id"]
             try:
                 to_user = get_user_model().objects.get(id=to_user_id)
+                print("ID: {}, To Username: {}".format(to_user_id, to_user.username))
                 new_room = ChatRoom.objects.create_chatroom(from_username=user.username, to_username=to_user.username)
                 responseBody = {
                     'status':True,

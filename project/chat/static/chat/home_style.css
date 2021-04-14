@@ -9,7 +9,56 @@ html{
 }
 
 body{
-    background-color: var(--verypalepink);
+    background-color: #ead3d7;
+}
+
+@media (min-width: 576px){
+    .overlay{
+        display: none;
+    }
+    .friendListDiv{
+        width: 20vw;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 576px){
+    .overlay{
+        position: fixed;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0);
+        width: 100vw;
+        height: 100vh;
+    }
+    .friendListDiv{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0;
+        min-width: 0;
+        z-index: 200;
+        overflow-x: hidden;
+        transition: 0.5s;
+    }
+}
+
+.fixed-slide-menu-btn{
+    position: fixed;
+    border-radius: 50%;
+    border-style: none;
+    background-color: var(--middlegrey);
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    right: 10px;
+    top: 10px;
+}
+
+.fixed-slide-menu-btn span{
+    margin-top: 3px;
+    padding: 0;
+    font-size: 30px;
+    color: white;
 }
 
 .chat-container{
@@ -40,8 +89,6 @@ iframe{
 
 .friendListDiv{
     font-size: 15px;
-    width: 20vw;
-    min-width: 260px;
     background-color:white;
 
 }
@@ -54,6 +101,7 @@ iframe{
     width: 100%;
     min-height: 50px;
     height: 59px;
+    border-right: 2px solid lightgrey;
     background-color: var(--middlepink);
 }
 
@@ -117,6 +165,8 @@ iframe{
 }
 
 .friendlist-container li{
+    overflow: hidden;
+    height: 72px;
     padding: 10px 10px;
     background-color: white;
     border-top: 2px solid lightgrey;
@@ -138,6 +188,10 @@ iframe{
 }
 
 .friendA .friend-last-message{
+    overflow: hidden;
+    width: 180px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-size: 13px;
 }
 

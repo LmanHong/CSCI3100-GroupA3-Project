@@ -2,28 +2,32 @@
 {% load static %}
 
 {% block title %} 
-<title>CUHKTinder - LiveChat</title> 
 <link rel="stylesheet" href="{% static 'chat/home_style.css' %}">
+<title>CUHKTinder - LiveChat</title> 
+
 {% endblock title %}
 
 {% block content %}
 {% csrf_token %}
-<div class="friendListDiv">
-    <p>Friend List</p>
-    {% if friendCount > 0 %}
-    {% for friend in friendList %}
-        <a href="#!" id="{{friend.id}}" class="friendA">{{friend.username}}</a><br>
-    {% endfor %}
-    {% else %}
-        <span>You currently have no friend, quickly</span> 
-        <a href="/friendSearch/frdSearch/">search for some new friends!</a>
-    {% endif %}
+<div class="container-flex">
+    <div class="row gx-0">
+        <div class="friendListDiv col-2 d-none d-sm-flex flex-column p-3 mb-auto vh-100 text-white bg-dark align-items-center">
+            <p>Friend List</p>
+            {% if friendCount > 0 %}
+            {% for friend in friendList %}
+                <a href="#!" id="{{friend.id}}" class="friendA">{{friend.username}}</a><br>
+            {% endfor %}
+            {% else %}
+                <span>You currently have no friend, quickly</span> 
+                <a href="/friendSearch/frdSearch/">search for some new friends!</a>
+            {% endif %}
+        </div>
+        
+        <div class="chatroomDiv col-12 col-sm-10">
+            <span class="placeholder">Click on a friend's name to start chatting!</span>
+            <iframe frameborder="0" class="chatroomFrame" style="display: none;"></iframe>
+        </div>
+    </div>
 </div>
-
-<div class="chatroomDiv">
-    <span class="placeholder">Click on a friend's name to start chatting!</span>
-    <iframe frameborder="0" class="chatroomFrame" style="display: none;"></iframe>
-</div>
-
 <script defer src="{% static 'chat/home.js' %}"></script>
 {% endblock content %}

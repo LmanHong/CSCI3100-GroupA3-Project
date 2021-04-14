@@ -74,10 +74,13 @@ class ChatRoomView(LoginRequiredMixin, View):
                 'sent_by':message.sent_by,
                 'sent_time':message.sent_time
             } for message in message_set]
+            print("To User: {}".format(target_room.to_user.username))
+            print(target_room.to_user.profile)
             if (target_room.from_user != from_user and target_room.to_user != from_user): raise ObjectDoesNotExist
             else:
                 context = {
                     'room_name':room_name,
+                    'to_user': target_room.to_user if target_room.from_user == from_user else target_room.from_user,
                     'message_list': message_list
                 }
         except Exception as ex:

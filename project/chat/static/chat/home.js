@@ -10,11 +10,6 @@ const placeholderSpanRef = document.querySelector('.placeholder');
 
 var isProcessing = false;
 
-window.addEventListener('resize', (e)=>{
-    chatroomFrameRef.width = window.innerWidth*0.8;
-    chatroomFrameRef.height = window.innerHeight;
-});
-
 const getChatroom = async (toUserId) =>{
     try{
         let res = await fetch(url, {

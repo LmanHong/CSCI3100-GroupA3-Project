@@ -1,6 +1,8 @@
 {% extends './base.html' %}
+{% load static %}
 
 {% block title %}
+<link rel="stylesheet" href="{% static 'chat/chatroom_style.css' %}">
 {% if room_name %}
 <title>Chatroom - {{room_name}}</title>
 {% else %}
@@ -11,18 +13,50 @@
 {% block content %}
 
 {% if room_name %}
-{% load static %}
-<script defer src="{% static 'chat/chat_api.js' %}"></script>
-<h1>{{room_name}}</h1>
+{% csrf_token %}
+<div class="chat-header container-flex">
+    <!--Chat Header-->
+    <div class="row align-items-start h-100">
+        <div class="col-auto">
+            <img src="{{to_user.profile.image.url}}" alt="{{to_user.profile.image.url}}" class="profile-image">
+        </div>
+        <ul class="col-auto">
+            <li><span class="to-username">{{to_user.username}}</span></li>
+            <li><span class="online-status">Online</span></li>
+        </ul>
+    </div>
+    <input type="hidden" name="room-name" id="room-name" value="{{room_name}}">
+</div>
 <div class="chat-log">
     {% for message in message_list %}
-        <p id="msg-{{message.message_id}}">{{message.sent_by}}: {{message.message_string}} ---> {{message.sent_time}}</p>
+        {% if message.sent_by == to_user.username %}
+        <div class="row mx-1">
+            <div id="msg-{{message.message_id}}" class="shadow-sm col-auto chat-message left">
+                {{message.message_string}}
+                <br><span class="sent-time">{{message.sent_time}}</span>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mx-1">
+            <div id="msg-{{message.message_id}}" class="shadow-sm col-auto chat-message right">
+                {{message.message_string}}
+                <br><span class="sent-time">{{message.sent_time}}</span>
+            </div>
+        </div>
+        {% endif %}
     {% endfor %}
-</div><br>
-{% csrf_token %}
-<input type="text" name="chat-input" id="chat-input" size="100"><input id="chat-submit-btn" type="button" value="Send"><br>
-<input id="chat-receive-btn" type="button" value="Receive">
-
+</div>
+<div class="chat-footer container-flex">
+    <!--Chat Footer-->
+    <div class="h-100 px-3">
+        <a href="#" class="material-icons d-none d-sm-block">emoji_emotions</a>
+        <input type="text" name="chat-input" id="chat-input" placeholder="Type a message">
+        <button class="material-icons" id="chat-submit-btn" type="button" value="Send">
+            send
+        </button>
+    </div>
+</div>
+<script defer src="{% static 'chat/chat_api.js' %}"></script>
 {% else %}
 
 <h1>{{error}}</h1><br>

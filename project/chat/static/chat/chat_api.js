@@ -2,7 +2,8 @@
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 //References of DOM objects
-const roomName = document.querySelector("h1").innerHTML;
+const roomName = document.getElementById('room-name').value;
+const toUsername = document.querySelector('.to-username').innerHTML;
 const chatLog = document.querySelector(".chat-log");
 const chatInput = document.getElementById("chat-input");
 const chatSubmitBtn = document.getElementById("chat-submit-btn");
@@ -22,8 +23,9 @@ const normalizedDateTime = (dateStr, hour24=false) =>{
     let date = new Date(dateStr);
     let month = months[date.getMonth()];
     let time = "";
+    console.log(date.getHours(), date.getMinutes());
     if (hour24) time = `${date.getHours()}:${date.getMinutes()}`;
-    else time = `${(date.getHours()%12==0?12:date.getHours()%12)}:${date.getMinutes()} ${(date.getHours()/12>0?"p.m.":"a.m.")}`;
+    else time = `${(date.getHours()%12==0?12:date.getHours()%12)}:${(date.getMinutes()<10?"0"+date.getMinutes():date.getMinutes())} ${(date.getHours()/12>=1?"p.m.":"a.m.")}`;
     return `${month} ${date.getDate()}, ${date.getFullYear()}, ${time}`;
 };
 
@@ -32,17 +34,24 @@ chatSocket.onmessage = async (e) =>{
     const data = await JSON.parse(e.data);
     console.log(data);
     if (data.message_status == 'msg' && document.getElementById(msgIdPrefix+data.message_id) == null){
-        let msgPara = document.createElement('p');
-        let content = `${data.sent_by}: ${data.message_string} ---> ${normalizedDateTime(data.sent_time)}`;
-        msgPara.innerHTML = content;
-        msgPara.id = msgIdPrefix+data.message_id;
-        chatLog.appendChild(msgPara);
+        let rowDiv = document.createElement('div');
+        let msgDiv = document.createElement('div');
+        let sentTimeSpan = document.createElement('span');
+        rowDiv.classList.add("row", "mx-1");
+        msgDiv.innerHTML = data.message_string;
+        msgDiv.id = msgIdPrefix+data.message_id;
+        sentTimeSpan.innerHTML = normalizedDateTime(data.sent_time);
+        msgDiv.classList.add("shadow-sm", "col-auto", "chat-message", (data.sent_by==toUsername?"left":"right"));
+        sentTimeSpan.classList.add("sent-time");
+        msgDiv.appendChild(document.createElement('br'));
+        msgDiv.appendChild(sentTimeSpan);
+        rowDiv.appendChild(msgDiv);
+        chatLog.appendChild(rowDiv);
     }
 };
 
 //Websocket Event listener for closing connection
 chatSocket.onclose = async (e) =>{
-    isWebSocket = false;
     console.error('ERROR: Chat Socket closed.');
 };
 
@@ -56,7 +65,7 @@ const sendMessage = async (e) =>{
             'sent_time':Date.now()
         }
         console.log(message_json);
-        if (isWebSocket){
+        if (isWebSocket && chatSocket.readyState == WebSocket.OPEN){
             //send chat messages via WebSocket
             try{
                 chatSocket.send(JSON.stringify(message_json));

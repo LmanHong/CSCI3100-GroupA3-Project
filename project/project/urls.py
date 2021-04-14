@@ -19,12 +19,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 import account.views
+import mainpage.views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', account.views.HomeView.as_view(), name='home'),
+    path('', account.mainpage.views.main_page.as_view(), name='home'),
 
     path('account/', include('account.urls')),
     path('chat/', include('chat.urls')),

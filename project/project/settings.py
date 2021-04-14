@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'chat',
     'friendSearch',
     'channels',
+    'mainpage'
 ]
 
 MIDDLEWARE = [

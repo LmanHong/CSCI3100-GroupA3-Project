@@ -16,7 +16,7 @@ class FriendSearchView(View):
             return render(request,'frd_searching.html',context)
         else:
             print('You are not logging in')
-            return redirect('home')
+            return redirect('login')
     
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -24,7 +24,7 @@ class FriendSearchView(View):
         fform = SearchForm(request.POST or None)
         form = RequestForm(request.POST or None)
         if not user.is_authenticated:
-            return redirect('home')
+            return redirect('login')
         if fform.is_valid():
             gender = request.POST['gender']
             jobtitle = request.POST['jobtitle']
@@ -95,13 +95,13 @@ class RequestView(View):
             context['requestlist'] = requested_by_users
             return render(request,'requests_list.html', context)
         else:
-            return redirect('home')
+            return redirect('login')
 
     def post(self, request, *args, **kwargs):
         user = request.user
         form = RequestForm(request.POST)
         if not user.is_authenticated:
-            return redirect('home')
+            return redirect('login')
         if form.is_valid():
             lists = request.POST['usernamelist']
             userlist = lists.split(", ")

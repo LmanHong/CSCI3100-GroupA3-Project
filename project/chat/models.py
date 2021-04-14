@@ -52,6 +52,7 @@ class ChatRoomManager(models.Manager):
                 new_room.save()
                 return new_room
 
+
     def create(self, from_username, to_username):
         return self.create_chatroom(from_username, to_username)
 
@@ -115,7 +116,9 @@ class ChatMessageManager(models.Manager):
 class ChatRoom(models.Model):
     room_name = models.AutoField(primary_key=True)
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='from_user_set', on_delete=models.CASCADE)
+    from_user_online = models.BooleanField(default=False)
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='to_user_set' ,on_delete=models.CASCADE)
+    to_user_online = models.BooleanField(default=False)
 
     objects = ChatRoomManager()
 

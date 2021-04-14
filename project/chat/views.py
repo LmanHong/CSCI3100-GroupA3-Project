@@ -20,9 +20,10 @@ class HomeView(LoginRequiredMixin, View):
         user = request.user
         friendList = FriendList.objects.returnFriendList(user=user)
         print(len(friendList))
+        friendProfileList = [get_user_model().objects.get(username=friend['username']) for friend in friendList]
         context = {
-            'friendList': friendList,
-            'friendCount': len(friendList)
+            'friendList': friendProfileList,
+            'friendCount': len(friendProfileList)
         }
         return render(request, 'chat/index.html', context)
 

@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from .models import ChatRoom, ChatMessage
@@ -11,6 +12,7 @@ class ChatConsumer(WebsocketConsumer):
         self.user = self.scope["user"]
         self.group_name = "group_{}".format(self.room_name)
 
+
         #Add current chat user channel to the group
         async_to_sync(self.channel_layer.group_add)(
             self.group_name,
@@ -20,7 +22,35 @@ class ChatConsumer(WebsocketConsumer):
         #Accepts the incoming websocket connection
         self.accept()
 
+        #Broadcase to others
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name,
+            {
+                'type':'spc',
+                'new_msg': {
+                    'message_string': {'online_status': 'Online'},
+                    'message_status': 'spc',
+                    'sent_time': str(datetime.now()),
+                    'sent_by': self.user.username,
+                }
+            }
+        )
+
     def disconnect(self, close_code):
+        #Broadcase to others
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name,
+            {
+                'type':'spc',
+                'new_msg': {
+                    'message_string': {'online_status': 'Offline'},
+                    'message_status': 'spc',
+                    'sent_time': str(datetime.now()),
+                    'sent_by': self.user.username,
+                }
+            }
+        )
+
         #Leave the group
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name,
@@ -36,16 +66,45 @@ class ChatConsumer(WebsocketConsumer):
         sent_time = text_data_json['sent_time']
         sent_by = self.user.username
 
-        new_msg = ChatMessage.objects.create_message(chat_room=chat_room, sent_by=sent_by, message_string=message_string)
+        if message_status == 'msg':
+            new_msg = ChatMessage.objects.create_message(chat_room=chat_room, sent_by=sent_by, message_string=message_string)
 
-        #Send the received message to the group
-        async_to_sync(self.channel_layer.group_send)(
-            self.group_name,
-            {
-                'type': 'msg',
-                'new_msg': new_msg
-            }
-        )
+            #Send the received message to the group
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name,
+                {
+                    'type': 'msg',
+                    'new_msg': new_msg
+                }
+            )
+        else:
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name,
+                {
+                    'type':'spc',
+                    'new_msg': {
+                        'message_string': message_string,
+                        'message_status': message_status,
+                        'sent_time': sent_time,
+                        'sent_by': sent_by,
+                    }
+                }
+            )
+
+    def spc(self, event):
+        #Receive messages from group
+        message_string = event['new_msg']['message_string']
+        message_status = event['new_msg']['message_status']
+        sent_time = event['new_msg']['sent_time']
+        sent_by = event['new_msg']['sent_by']
+
+        #Send message to websocket
+        self.send(text_data=json.dumps({
+            'message_string': message_string,
+            'message_status': message_status,
+            'sent_time': sent_time,
+            'sent_by': sent_by
+        }, cls=DjangoJSONEncoder))
 
     def msg(self, event):
         #Receive messages from group

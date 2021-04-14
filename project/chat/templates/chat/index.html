@@ -9,25 +9,45 @@
 
 {% block content %}
 {% csrf_token %}
-<div class="container-flex">
-    <div class="row gx-0">
-        <div class="friendListDiv col-2 d-none d-sm-flex flex-column p-3 mb-auto vh-100 text-white bg-dark align-items-center">
-            <p>Friend List</p>
-            {% if friendCount > 0 %}
+<div class="d-flex flex-row chat-container">
+    <div class="friendListDiv d-none d-sm-flex flex-column mb-auto vh-100">
+        <div class="friendlist-header d-flex flex-row">
+            <img src="{{user.profile.image.url}}" alt="{{user.profile.image.url}}" class="profile-image" id="user-profile-image">
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" id="dropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="material-icons">more_vert</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownBtn">
+                    <li><a href="/account/profile/" class="dropdown-item">My Profile</a></li>
+                    <li><a href="/friendSearch/frdSearch/" class="dropdown-item">Friend Search</a></li>
+                </ul>
+            </div>
+        </div>
+        {% if friendCount > 0 %}
+        <ul class="friendlist-container">
             {% for friend in friendList %}
-                <a href="#!" id="{{friend.id}}" class="friendA">{{friend.username}}</a><br>
+            <li><a href="#!" id="{{friend.id}}" class="friendA d-flex flex-row">
+                <img src="{{friend.profile.image.url}}" alt="{{frined.profile.image.url}}" class="profile-image">
+                <div class="text-container d-flex flex-column">
+                    <span class="friend-name">{{friend.username}}</span>
+                    <span class="friend-last-mesage">Last message goes here</span>
+                </div>
+            </a></li>
             {% endfor %}
-            {% else %}
-                <span>You currently have no friend, quickly</span> 
-                <a href="/friendSearch/frdSearch/">search for some new friends!</a>
-            {% endif %}
+        </ul>
+        {% else %}
+        <div class="no-friend-container">
+            <span>You currently have no friend, click </span> 
+            <a href="/friendSearch/frdSearch/">here to search for some new friends!</a>
         </div>
-        
-        <div class="chatroomDiv col-12 col-sm-10">
-            <span class="placeholder">Click on a friend's name to start chatting!</span>
-            <iframe frameborder="0" class="chatroomFrame" style="display: none;"></iframe>
-        </div>
+        {% endif %}
+    </div>
+    
+    <div class="chatroomDiv vh-100">
+        <p class="placeholder">Click on a friend's name to start chatting!</p>
+        <iframe frameborder="0" class="chatroomFrame" style="display: none;"></iframe>
     </div>
 </div>
+
 <script defer src="{% static 'chat/home.js' %}"></script>
 {% endblock content %}

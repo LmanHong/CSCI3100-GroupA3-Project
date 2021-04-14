@@ -1,5 +1,155 @@
+html{
+    --darkpink: #FD297B;
+    --middlepink: #FF5864;
+    --lightpink: #FF655B;
+    --verylightpink: #FAA1AF;
+    --palepink: #FACDD6;
+    --verypalepink: #FAE7EC;
+    --middlegrey: #424242;
+}
+
+body{
+    background-color: var(--verypalepink);
+}
+
+.chat-container{
+    max-width: 1024px;
+    margin: auto;
+    bottom: 0;
+
+}
+
+.chatroomDiv{
+    width:100%;
+    text-align: center;
+    background-image: linear-gradient(var(--darkpink), var(--middlepink));
+}
+
+.chatroomDiv .placeholder{
+    margin-top: 50vh;
+    text-align:center;
+    font-size: 36px;
+    color: var(--middlegrey);
+}
+
 iframe{
     width: 100%;
-    height: 100vh;
+    height: 100%;
     margin: 0;
 }
+
+.friendListDiv{
+    font-size: 15px;
+    width: 20vw;
+    min-width: 260px;
+    background-color:white;
+
+}
+
+.friendlist-header{
+    position: relative;
+    top: 0;
+    margin: 0;
+    padding: 10px 16px;
+    width: 100%;
+    min-height: 50px;
+    height: 59px;
+    background-color: var(--middlepink);
+}
+
+.friendlist-header .profile-image{
+    border-radius: 50%;
+    border: 2px solid lightgrey;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.dropdown{
+    margin-left: auto
+}
+
+.friendlist-header #dropdownBtn{
+    border-style: none;
+    outline: none;
+    padding: 0;
+    vertical-align: top;
+    width: 40px;
+    height: 40px;
+}
+
+#dropdownBtn:focus, #dropdownBtn:active{
+    box-shadow: none;
+}
+
+.friendlist-header #dropdownBtn span{
+    font-size: 30px;
+    vertical-align: top;
+    text-align: center;
+    color: white;
+}
+
+.dropdown-toggle::after{
+    display: none;
+}
+
+.no-friend-container{
+    padding: 10px 10px;
+    font-size: 16px;
+    color: white;
+}
+
+.no-friend-container a{
+    color: inherit;
+    text-decoration: none;
+}
+
+.no-friend-container a:hover{
+    color: inherit;
+}
+
+.friendlist-container{
+    overflow-x: hidden;
+    overflow-y: auto;
+    list-style-type: none;
+    padding: 0;
+
+}
+
+.friendlist-container li{
+    padding: 10px 10px;
+    background-color: white;
+    border-top: 2px solid lightgrey;
+    border-bottom: 2px solid lightgrey;
+}
+
+.frinedlist-container li:hover{
+    background-color: black;
+}
+
+.friendA{
+    text-decoration: none;
+    color: grey;
+}
+
+.friendA .friend-name{
+    font-size: 16px;
+    color:black;
+}
+
+.friendA .friend-last-message{
+    font-size: 13px;
+}
+
+.friendA:hover{
+    color: grey;
+}
+
+.friendA .profile-image{
+    border-radius: 50%;
+    border-style: none;
+    width: 49px;
+    height: 49px;
+    margin-right: 15px;
+}
+

@@ -7,6 +7,7 @@ const toUsername = document.querySelector('.to-username').innerHTML;
 const chatLog = document.querySelector(".chat-log");
 const chatInput = document.getElementById("chat-input");
 const chatSubmitBtn = document.getElementById("chat-submit-btn");
+const onlineStatusSpan = document.querySelector('.online-status');
 
 //Constants for sending and receiving messages
 const wsUrl = 'ws://'+window.location.host+'/ws/chat/'+roomName+'/';
@@ -34,6 +35,7 @@ chatSocket.onmessage = async (e) =>{
     const data = await JSON.parse(e.data);
     console.log(data);
     if (data.message_status == 'msg' && document.getElementById(msgIdPrefix+data.message_id) == null){
+        onlineStatusSpan.innerHTML = "Online";
         let rowDiv = document.createElement('div');
         let msgDiv = document.createElement('div');
         let sentTimeSpan = document.createElement('span');
@@ -47,6 +49,12 @@ chatSocket.onmessage = async (e) =>{
         msgDiv.appendChild(sentTimeSpan);
         rowDiv.appendChild(msgDiv);
         chatLog.appendChild(rowDiv);
+        rowDiv.scrollIntoView({behavior: 'smooth'});
+    }else if (data.message_status == 'spc'){
+        let specialBody = data.message_string;
+        if (specialBody.online_status != null && data.sent_by == toUsername){
+            onlineStatusSpan.innerHTML = specialBody.online_status;
+        }
     }
 };
 
@@ -78,10 +86,35 @@ const sendMessage = async (e) =>{
         }
         chatInput.value = '';
     }else console.error("ERROR: Chat message cannot be empty!");
-}
+};
+
+const sendTypingStatus = async (e) =>{
+    let message_json = {
+        'message_string':{
+            'online_status': (chatInput.value == ''?"Online":"Typing")
+        },
+        'message_status':'spc',
+        'sent_time':Date.now()
+    }
+    console.log(message_json);
+    if (isWebSocket && chatSocket.readyState == WebSocket.OPEN){
+        //send chat messages via WebSocket
+        try{
+            chatSocket.send(JSON.stringify(message_json));
+            console.log('message sent.');
+        }catch(err){
+            console.error("ERROR: ", err);
+        }
+    }else{
+        throw TypeError("WebSocket is not available.");
+    }
+};
+
+chatInput.addEventListener('input', sendTypingStatus);
 
 chatSubmitBtn.addEventListener('click', sendMessage);
 document.addEventListener('keyup', (e)=>{
     if (e.key == 'Enter') sendMessage();
 });
 
+chatLog.scrollTo(0, chatLog.scrollHeight);

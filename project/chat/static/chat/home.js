@@ -7,6 +7,7 @@ const chatroomDiv = document.querySelector('.chatroomDiv');
 const friendsRef = document.querySelectorAll('.friendA');
 const chatroomFrameRef = document.querySelector('.chatroomFrame');
 const placeholderSpanRef = document.querySelector('.placeholder');
+const userProfileImageRef = document.getElementById('user-profile-image');
 
 var isProcessing = false;
 
@@ -46,8 +47,7 @@ const getChatroom = async (toUserId) =>{
 };
 
 const renderChatroom = async (e)=>{
-    console.log(e.target);
-    let toUserId = e.target.id;
+    let toUserId = (e.target.parentElement.nodeName == "A"?e.target.parentNode.id:e.target.parentNode.parentNode.id);
     console.log("friend id: ", toUserId);
     if (isProcessing){
         console.error("ERROR: Another chatroom is requesting.");
@@ -70,4 +70,6 @@ friendsRef.forEach((friendRef)=>{
     friendRef.addEventListener('click', renderChatroom);
 });
 
-
+userProfileImageRef.addEventListener('click', (e)=>{
+    window.location.href = 'http://'+window.location.host+'/account/profile/';
+});

@@ -25,7 +25,7 @@ import mainpage.views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', account.mainpage.views.main_page.as_view(), name='home'),
+    path('', mainpage.mainpage.views.main_page.as_view(), name='home'),
 
     path('account/', include('account.urls')),
     path('chat/', include('chat.urls')),

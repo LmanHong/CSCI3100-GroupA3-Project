@@ -48,8 +48,15 @@ html{
 
 .bottom-nav-items .support-text{
     display: none;
-    font-size: 10px;
+    margin: auto;
+    font-size: 8px;
     color: var(--middlegrey);
+}
+
+.popup-link .support-text{
+    display: block;
+    width: 50px;
+
 }
 
 .bottom-nav-items.popup{
@@ -89,7 +96,7 @@ html{
     text-align: center;
 }
 
-.search-container, .search-result-container{
+.search-container, .search-result-container, .request-container{
     box-shadow: 0 4px 8px 0 rgba(253, 41, 123, 0.2), 0 6px 20px 0 rgba(253, 41, 123, 0.19);
     margin-top: 5vh;
     width: 70vw;
@@ -161,21 +168,24 @@ html{
     text-overflow: ellipsis;
 }
 
-.search-result-title{
+.request-title, .search-result-title{
     font-size: 25px;
     margin-left: auto;
     margin-right: auto;
     color: white;
 }
 
-.no-result-text{
+.no-result-text, .no-request-text{
     padding: 0 20px;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
     font-size: 20px;
+    color: white;
 }
+
+
 
 
 

@@ -7,18 +7,10 @@ Profile
 {% block content %}
 
 <div class="container">
-    <p class="text-center header">Profile</p>
-
-    <div class="greeting-message">
-        Hi, {% if user.is_authenticated %}{{user.username}}{% else %}Anonymous{% endif %}.
-    </div>
-    
     {% if user.is_authenticated %}
-        <div class="btn-group" role="group">
-            <a class="btn btn-secondary" href="{% url 'profile_update' %}">Update Profile</a>
-            <a class="btn btn-secondary" href="{% url 'logout' %}">Logout</a>
-        </div>
-        <div class="profile">
+        <div class="profile d-flex flex-column">
+            <span class="text-center title">Profile</span>
+
             <img class="profile-image" src="{{user.profile.image.url}}">
             {% if not user.profile.first_name or not user.profile.last_name or not user.profile.gender or not user.profile.date_of_birth or not user.profile.job_title or not user.profile.passions %}
             <p>The profile is not fully set up yet. Please update your profile.</p>
@@ -31,9 +23,8 @@ Profile
             {% endif %}
         </div>
     {% else %}
-        <div class="btn-group" role="group">
-            <a class="btn btn-secondary" href="{% url 'register' %}">Register</a>
-            <a class="btn btn-secondary" href="{% url 'login' %}?next=/chat/">Login</a>
+        <div class="greeting-message">
+            Hi, anonymous. Please register an account first!
         </div>
     {% endif %}
 </div>
@@ -47,11 +38,28 @@ Profile
     .greeting-message {
         margin-bottom: 15px;
     }
-    .profile {
-        margin-top: 15px;
-    }
     .profile > p {
         margin-top: 15px;
+    }
+    .profile {
+        box-shadow: 0 4px 8px 0 rgba(253, 41, 123, 0.2), 0 6px 20px 0 rgba(253, 41, 123, 0.19);
+        margin-top: 15px;
+        padding: 10px 25px 25px 25px;
+        width: 50vw;
+        min-width: 300px;
+        max-width: 997px;
+        height: fit-content;
+        border-radius: 30px;
+        border-style: none;
+        background-color: white;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .title {
+        margin-bottom: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: black;
     }
 {% endblock style %}
 

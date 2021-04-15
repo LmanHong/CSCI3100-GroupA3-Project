@@ -6,9 +6,9 @@ Register
 
 {% block content %}
 
-<div class="container">
-    <p class="text-center header">Register</p>
+<div class="container d-flex flex-column">
 
+    <span class="text-center title">Register</span>
     <form method="post">
         {% csrf_token %}
     
@@ -27,17 +27,35 @@ Register
         {% endfor %}
     
         <input type="hidden" name="next" value="{{request.GET.next}}">
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-secondary">Register</button>
     </form>
 </div>
 
 {% endblock content %}
 
 {% block style %}
-    .header {
-        font-size: 25px;
-    }
     .help-text {
-        font-size: 15px;
+        font-size: 12px;
+    }
+    .container {
+        box-shadow: 0 4px 8px 0 rgba(253, 41, 123, 0.2), 0 6px 20px 0 rgba(253, 41, 123, 0.19);
+        margin-top: 5vh;
+        padding: 10px 25px 25px 25px;
+        width: 70vw;
+        min-width: 300px;
+        max-width: 997px;
+        height: fit-content;
+        border-radius: 30px;
+        border-style: none;
+        background-color: white;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .title {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: black;
     }
 {% endblock style %}

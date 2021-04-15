@@ -1,30 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'friendSearch/base.html' %}
 {%block title%}
     friendSearch
 {% endblock%}
 
 {% block content %}
-    {%load static%}
-        <link rel="stylesheet" href={%static "css/design.css"%}>
+
 <!-- template for friend_searching-->
     {% load static %}
-    <header> <!--reference: bootstrap-->
-        <nav class="navbar navbar-expand-md navbar-secondary navbar-1 bg-secondary">            
-            <a href = '/'>
-                <img src={% static "/images/icon.png"%} style="width:50px;height:50px;">         
-            </a>
-            <button class = "navbar-toggler" type="button" data-toggle="collapse" data-target="#lists" aria-expanded="false" aria-controls="lists" aria-label="Toggle navigation">
-                <span style="color: white">...</span>
-            </button>
-            <div class="collapse navbar-collapse ml-auto" id="lists">            
-                <a class="nav-item nav-link" href='/account/profile'>Profile</a>
-                <a class="nav-item nav-link" href='/friendSearch/request'>Request</a>
-                <a class="nav-item nav-link" href='/friendSearch/frdSearch'>Find Friend</a>
-                <a class="nav-item nav-link" href='/chat'>Chat</a>
-            </div>
-        </nav>
-    </header>
-    <div class = "container"> <!--show message-->
+
+     <!--show message-->
         {%if messages%}
             {%for message in messages%}
                 {%if message.level == DEFAULT_MESSAGE_LEVELS.INFO %} <!--reference: the bootstrap-->
@@ -40,22 +24,26 @@
                 {%endif%}
           {%endfor%}
         {%endif%}
-        <h3>Fill in the form and click "submit" button to find your friend!</h3>
-        <p>You can pick more than one preferences, just seperated them with <b>", "</b>.</p>
-        <body>
-            <!--the form for searching friend-->
-            <form method="post"> <!--move to another interface-->
-                {% csrf_token %}
-                {% for field in SearchForm %}
-                    <div>
-                        {{field.label_tag}}
-                        {{field}}
-                    </div>
-                    <br>
-                {% endfor %}
-                <input class="btn btn-secondary" type ="submit" value="search">
-            </form>
-        </body>
-    </div>
+        <div class="search-container d-flex flex-row">
+            <img src="{% static 'images/search-bg.jpg' %}" alt="{% static 'images/search-bg.jpg' %}" class="background-image d-none d-sm-block">
+            <div class="search-form-container d-flex flex-column">
+    
+                <span class="form-title">Fill in the form and click "submit" button to find your friend!</span>
+                <span class="form-description">You can pick more than one preferences, just seperated them with <b>", "</b>.</span>
+                <!--the form for searching friend-->
+                <form method="post"> <!--move to another interface-->
+                    {% csrf_token %}
+                    {% for field in SearchForm %}
+                        <div>
+                            {{field.label_tag}}
+                            {{field}}
+                        </div>
+                        <br>
+                    {% endfor %}
+                    <input class="btn btn-secondary" type ="submit" value="search">
+                </form>
+            </div>
+    
+        </div>
 
 {% endblock content %}

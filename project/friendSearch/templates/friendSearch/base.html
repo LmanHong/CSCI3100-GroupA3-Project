@@ -1,0 +1,89 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "author" content = "Ho Siu Hang">
+    <title>
+    {% block title %}
+    {% endblock title %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href={%static "css/friendSearch_style.css"%}>
+</head>
+
+<body>
+    
+    <!--Bottom Navigation Bar-->
+    <div class="bottom-fixed-nav d-flex flex-row">
+        <a href="/" class="bottom-nav-items">
+            <img src="{% static 'images/icon.png' %}" alt="{% static 'images/icon.png' %}" width="40" height="40">
+        </a>
+        <a href="/chat/" class="bottom-nav-items d-flex flex-column" data-toggle="tooltip" data-placement="bottom" title="ChatRoom">
+            <span class="material-icons">chat</span>
+            <span class="support-text">ChatRoom</span>
+        </a>
+        <div class="bottom-nav-items friend-popup">
+            <ul class="friend-popup-list">
+                <li class="popup-item">
+                    <a href="/friendSearch/frdSearch/" class="popup-link  d-flex flex-column" >
+                        <span class="material-icons">favorite</span>
+                        <span class="support-text">Find Friends</span>
+                    </a>
+                </li>
+                <li class="popup-item">
+                    <a href="/friendSearch/request/" class="popup-link d-flex flex-column">
+                        <span class="material-icons">people_alt</span>
+                        <span class="support-text">Friend Requests</span>
+                    </a>
+                </li>
+            </ul>
+            <a href="#" class="d-flex flex-column friend-popup-toggler" data-toggle="tooltip" data-placement="bottom" title="FriendSearch">
+                <span class="material-icons">flash_on</span>
+                <span class="support-text">FriendSearch</span>
+            </a>
+        </div>
+        <div class="bottom-nav-items account-popup">
+            <ul class="account-popup-list">
+                <li class="popup-item">
+                    <a href="/account/profile/" class="popup-link d-flex flex-column">
+                        <span class="material-icons">favorite</span>
+                        <span class="support-text">Account Profile</span>
+                    </a>
+                </li>
+                <li class="popup-item">
+                    <a href="/account/profile_update/" class="popup-link d-flex flex-column">
+                        <span class="material-icons">people_alt</span>
+                        <span class="support-text">Profile Update</span>
+                    </a>
+                </li>
+                <li class="popup-item">
+                    <a href="/account/logout/" class="popup-link  d-flex flex-column">
+                        <span class="material-icons">people_alt</span>
+                        <span class="support-text">Logout</span>
+                    </a>
+                </li>
+            </ul>
+            <a href="#" class="d-flex flex-column account-popup-toggler" data-toggle="tooltip" data-placement="top" title="Account">
+                <span class="material-icons">account_circle</span>
+                <span class="support-text">Account</span>
+            </a>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock content %}
+
+    <!--Bootstrap Javascript-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
+
+
+

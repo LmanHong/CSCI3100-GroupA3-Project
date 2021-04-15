@@ -21,6 +21,18 @@ class HomeView(LoginRequiredMixin, View):
         friendList = FriendList.objects.returnFriendList(user=user)
         print(len(friendList))
         friendProfileList = [get_user_model().objects.get(username=friend['username']) for friend in friendList]
+        latestMsgList = [ChatMessage.objects.get_latest_message(from_username=user.username, to_username=friend.username) for friend in friendProfileList]
+        for i in range(len(latestMsgList)):
+            friend = friendProfileList[i]
+            latest_msg = latestMsgList[i]
+            friendProfileList[i] = {
+                'user': friend,
+                'latestMsg': latest_msg,
+            }
+        
+        for friend in friendProfileList:
+            print(friend['user'], friend['latestMsg'])
+
         context = {
             'friendList': friendProfileList,
             'friendCount': len(friendProfileList)

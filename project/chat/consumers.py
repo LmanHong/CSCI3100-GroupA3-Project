@@ -2,8 +2,39 @@ import json
 from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.contrib.auth import get_user_model
 from .models import ChatRoom, ChatMessage
 from django.core.serializers.json import DjangoJSONEncoder
+
+class NotificationConsumer(WebsocketConsumer):
+    def connect(self):
+        self.user = self.scope["user"]
+        self.my_noti_group = "notification_{}".format(self.user.username)
+
+        async_to_sync(self.channel_layer.group_add)(
+            self.my_noti_group,
+            self.channel_name
+        )
+
+        print("User {} connected to notification socket with group name {}.".format(self.user.username, self.my_noti_group))
+        self.accept()
+
+    def disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.my_noti_group,
+            self.channel_name
+        )
+
+    def latestMsg(self, event):
+        message_string = event['latest_msg']['message_string']
+        sent_by = event['latest_msg']['sent_by']
+        sent_to = event['latest_msg']['sent_to']
+
+        self.send(text_data=json.dumps({
+            'message_string': message_string,
+            'sent_by': sent_by,
+            'sent_to': sent_to
+        }, cls=DjangoJSONEncoder))
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):

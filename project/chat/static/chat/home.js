@@ -1,6 +1,8 @@
 const url = 'http://'+window.location.host + '/chat/';
 const chatroomUrl = null;
+const wsUrl = 'ws://'+window.location.host+'/ws/chat/';
 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const myUsername = document.getElementById('my-username').value;
 
 const friendListDiv = document.querySelector('.friendListDiv');
 const chatroomDiv = document.querySelector('.chatroomDiv');
@@ -13,6 +15,26 @@ const overlayDiv = document.querySelector('.overlay');
 
 var isProcessing = false;
 var isMenuOpened = false;
+
+const notificationSocket = new WebSocket(wsUrl);
+
+notificationSocket.onmessage = async (e) =>{
+    const data = await JSON.parse(e.data);
+    console.log(data);
+    let targetUsername = (data.sent_by == myUsername?data.sent_to:data.sent_by)
+    console.log(targetUsername)
+    const friendNameSpan = document.querySelectorAll('.friend-name');
+    friendNameSpan.forEach((ref)=>{
+        if (ref.innerHTML == targetUsername){
+            console.log(ref.nextElementSibling);
+            ref.nextElementSibling.innerHTML = data.message_string;
+        }
+    });
+};
+
+notificationSocket.onclose = async (e) =>{
+    console.error('ERROR: notification socket closed.');
+};
 
 const getChatroom = async (toUserId) =>{
     try{
@@ -74,6 +96,7 @@ const renderChatroom = async (e)=>{
 const toggleSlideMenu = ()=>{
     if (window.innerWidth<=576){
         overlayDiv.style.backgroundColor = (isMenuOpened?"rgba(0, 0, 0, 0)":"rgba(0, 0, 0, 0.4)");
+        overlayDiv.style.zIndex = (isMenuOpened?"-1":"1");
         friendListDiv.style.width = (isMenuOpened?"0px":"260px");
         isMenuOpened = !isMenuOpened;
     }

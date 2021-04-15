@@ -14,19 +14,17 @@
 
 {% if room_name %}
 {% csrf_token %}
-<div class="chat-header container-flex">
+<div class="chat-header d-flex flex-row">
     <!--Chat Header-->
-    <div class="row align-items-start h-100">
-        <div class="col-auto">
-            <img src="{{to_user.profile.image.url}}" alt="{{to_user.profile.image.url}}" class="profile-image">
-        </div>
-        <ul class="col-auto">
-            <li><span class="to-username">{{to_user.username}}</span></li>
-            <li><span class="online-status">Offline</span></li>
-        </ul>
+    <img src="{{to_user.profile.image.url}}" alt="{{to_user.profile.image.url}}" class="profile-image">
+    <div class="chat-header-text d-flex flex-column">
+        <span class="to-username">{{to_user.username}}</span>
+        <span class="online-status">Offline</span>
     </div>
     <input type="hidden" name="room-name" id="room-name" value="{{room_name}}">
 </div>
+
+<!--Chat log-->
 <div class="chat-log">
     {% for message in message_list %}
         {% if message.sent_by == to_user.username %}
@@ -46,8 +44,8 @@
         {% endif %}
     {% endfor %}
 </div>
-<div class="chat-footer container-flex">
     <!--Chat Footer-->
+<div class="chat-footer container-flex">
     <div class="h-100 px-3">
         <a href="#" class="material-icons d-none d-sm-block">emoji_emotions</a>
         <input type="text" name="chat-input" id="chat-input" placeholder="Type a message">

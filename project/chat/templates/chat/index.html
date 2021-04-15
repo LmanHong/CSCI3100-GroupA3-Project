@@ -17,6 +17,7 @@
 
 <!--Chat Container-->
 <div class="d-flex flex-row chat-container">
+    <!--Friend List side menu-->
     <div class="friendListDiv d-flex flex-column mb-auto vh-100">
         <div class="friendlist-header d-flex flex-row">
             <img src="{{user.profile.image.url}}" alt="{{user.profile.image.url}}" class="profile-image" id="user-profile-image">
@@ -30,15 +31,20 @@
                     <li><a href="/" class="dropdown-item">Home Page</a></li>
                 </ul>
             </div>
+            <input type="hidden" name="my-username" id="my-username" value="{{user.username}}">
         </div>
         {% if friendCount > 0 %}
         <ul class="friendlist-container">
             {% for friend in friendList %}
-            <li><a href="#!" id="{{friend.id}}" class="friendA d-flex flex-row">
-                <img src="{{friend.profile.image.url}}" alt="{{frined.profile.image.url}}" class="profile-image">
+            <li><a href="#!" id="{{friend.user.id}}" class="friendA d-flex flex-row">
+                <img src="{{friend.user.profile.image.url}}" alt="{{friend.user.profile.image.url}}" class="profile-image">
                 <div class="text-container d-flex flex-column">
-                    <span class="friend-name">{{friend.username}}</span>
-                    <span class="friend-last-message">Last message goes here and this is used to test</span>
+                    <span class="friend-name">{{friend.user.username}}</span>
+                    {% if friend.latestMsg %}
+                    <span class="friend-last-message">{{friend.latestMsg.message_string}}</span>
+                    {% else %}
+                    <span class="friend-last-message">No previous messages</span>
+                    {% endif %}
                 </div>
             </a></li>
             {% endfor %}
@@ -51,6 +57,7 @@
         {% endif %}
     </div>
     
+    <!--Chatroom window-->
     <div class="chatroomDiv vh-100">
         <p class="placeholder">Click on a friend's name to start chatting!</p>
         <iframe frameborder="0" class="chatroomFrame" style="display: none;"></iframe>

@@ -2,6 +2,10 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class ChatRoomManager(models.Manager):
     def get_chatroom(self, room_name=None,from_username=None, to_username=None, exact=False):
@@ -128,6 +132,13 @@ class ChatMessageManager(models.Manager):
             chat_room = ChatRoom.objects.get_chatroom(from_username=from_username, to_username=to_username)
         if count == 0: return self.get_queryset().filter(models.Q(chat_room=chat_room))
         else: return self.get_queryset().filter(models.Q(chat_room=chat_room))[:count]
+    
+    def get_latest_message(self, room_name=None, from_username=None, to_username=None):
+        try:
+            latest_msg = self.get_messages_from_chatroom(room_name=room_name,  from_username=from_username, to_username=to_username)
+            return latest_msg[len(latest_msg)-1]
+        except:
+            return None
 
 class ChatRoom(models.Model):
     room_name = models.AutoField(primary_key=True)
@@ -162,4 +173,41 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ["sent_time"]
+
+@receiver(post_save, sender=ChatMessage)
+def broadcastLatestMsg(sender, instance, created, **kwargs):
+    if created:
+        print("New chat message created. ", instance)
+        chat_room = instance.chat_room
+        sent_by = instance.sent_by
+        from_user = chat_room.from_user
+        to_user = chat_room.to_user
+        sent_to = from_user.username if sent_by == to_user.username else to_user.username
+        print(sent_by, sent_to)
+
+        noti_group1 = "notification_{}".format(sent_by)
+        noti_group2 = "notification_{}".format(sent_to)
+
+        async_to_sync(get_channel_layer().group_send)(
+            noti_group1,
+            {
+                'type': 'latestMsg',
+                'latest_msg':{
+                    'message_string': instance.message_string,
+                    'sent_by': sent_by,
+                    'sent_to': sent_to
+                }
+            }
+        )
+        async_to_sync(get_channel_layer().group_send)(
+            noti_group2,
+            {
+                'type': 'latestMsg',
+                'latest_msg':{
+                    'message_string': instance.message_string,
+                    'sent_by': sent_by,
+                    'sent_to': sent_to
+                }
+            }
+        )
 

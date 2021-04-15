@@ -48,16 +48,16 @@ body{
     border-style: none;
     background-color: var(--middlegrey);
     z-index: 100;
-    width: 50px;
-    height: 50px;
-    right: 10px;
+    width: 40px;
+    height: 40px;
+    right: 16px;
     top: 10px;
 }
 
 .fixed-slide-menu-btn span{
     margin-top: 3px;
     padding: 0;
-    font-size: 30px;
+    font-size: 20px;
     color: white;
 }
 

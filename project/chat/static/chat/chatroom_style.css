@@ -30,26 +30,22 @@ body{
     border-radius: 50%;
 }
 
-.chat-header ul{
-    height: 40px;
-    top: 0;
-    margin-top: -10px;
-    list-style: none;
+.chat-header-text{
+    margin-left: 10px;
+    margin-top:-3px;
 }
 
-.chat-header li:last-child{
-    margin-top: -15px;
-}
-
-.chat-header span{
+.chat-header-text span{
     color: white;
 }
 
 .chat-header .to-username{
+    height: fit-content;
     font-size: 16px;
 }
 
 .chat-header .online-status{
+    height: fit-content;
     font-size: 13px;
 }
 

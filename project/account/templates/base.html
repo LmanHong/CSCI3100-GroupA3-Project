@@ -22,8 +22,8 @@
     {% block content %}
     {% endblock content %}
 
-    <!-- Bottom Navigation Bar -->
-    <div class="bottom-fixed-nav d-flex flex-row">
+     <!--Bottom Navigation Bar-->
+     <div class="bottom-fixed-nav d-flex flex-row">
         <a href="/" class="bottom-nav-items">
             <img src="{% static 'images/icon.png' %}" alt="{% static 'images/icon.png' %}" width="40" height="40">
         </a>
@@ -34,13 +34,13 @@
         <div class="bottom-nav-items friend-popup">
             <ul class="friend-popup-list">
                 <li class="popup-item">
-                    <a href="/friendSearch/frdSearch/" class="popup-link  d-flex flex-column" >
+                    <a href="/friendSearch/frdSearch/" class="popup-link  d-flex flex-row" >
                         <span class="material-icons">favorite</span>
                         <span class="support-text">Find Friends</span>
                     </a>
                 </li>
                 <li class="popup-item">
-                    <a href="/friendSearch/request/" class="popup-link d-flex flex-column">
+                    <a href="/friendSearch/request/" class="popup-link d-flex flex-row">
                         <span class="material-icons">people_alt</span>
                         <span class="support-text">Friend Requests</span>
                     </a>
@@ -54,22 +54,29 @@
         <div class="bottom-nav-items account-popup">
             <ul class="account-popup-list">
                 <li class="popup-item">
-                    <a href="/account/profile/" class="popup-link d-flex flex-column">
-                        <span class="material-icons">favorite</span>
+                    <a href="/account/profile/" class="popup-link d-flex flex-row">
+                        <span class="material-icons">portrait</span>
                         <span class="support-text">Account Profile</span>
                     </a>
                 </li>
                 <li class="popup-item">
-                    <a href="/account/profile_update/" class="popup-link d-flex flex-column">
-                        <span class="material-icons">people_alt</span>
+                    <a href="/account/profile_update/" class="popup-link d-flex flex-row">
+                        <span class="material-icons">manage_accounts</span>
                         <span class="support-text">Profile Update</span>
                     </a>
                 </li>
                 <li class="popup-item">
-                    <a href="/account/logout/" class="popup-link  d-flex flex-column">
-                        <span class="material-icons">people_alt</span>
+                    {% if user.is_authenticated %}
+                    <a href="/account/logout/" class="popup-link  d-flex flex-row">
+                        <span class="material-icons">logout</span>
                         <span class="support-text">Logout</span>
                     </a>
+                    {% else %}
+                    <a href="/account/login/" class="popup-link  d-flex flex-row">
+                        <span class="material-icons">login</span>
+                        <span class="support-text">Login</span>
+                    </a>
+                    {% endif %}
                 </li>
             </ul>
             <a href="#" class="d-flex flex-column account-popup-toggler" data-toggle="tooltip" data-placement="top" title="Account">
@@ -96,85 +103,92 @@
         --middlegrey: #424242;
     }
 
-    /* Bottom Fixed Navigation Bar Style */
-    .bottom-fixed-nav{
-        box-shadow: 0 4px 8px 0 rgba(253, 41, 123, 0.2), 0 6px 20px 0 rgba(253, 41, 123, 0.19);
-        z-index: 100;
-        background-color: white;
-        height: 72px;
-        min-width: 250px;
-        border-radius: 40px;
-        border-style: none;
-        position: fixed;
-        bottom: 2vh;
-        left: 50%;
-        margin-left: -125px;
-        padding: 10px 10px;
-    }
+/* Bottom Fixed Navigation Bar Style */
+.bottom-fixed-nav{
+    box-shadow: 0 4px 8px 0 rgba(253, 41, 123, 0.2), 0 6px 20px 0 rgba(253, 41, 123, 0.19);
+    z-index: 100;
+    background-color: white;
+    height: 72px;
+    min-width: 250px;
+    border-radius: 40px;
+    border-style: none;
+    position: fixed;
+    bottom: 2vh;
+    left: 50%;
+    margin-left: -125px;
+    padding: 10px 10px;
+}
 
-    .bottom-nav-items{
-        width: fit-content;
-        height: fit-content;
-        margin: auto;
-        text-decoration: none!important;
-        color: var(--darkpink);
-    }
+.bottom-nav-items{
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    text-decoration: none!important;
+    color: var(--darkpink);
+}
 
-    .bottom-nav-items a{
-        text-decoration: none!important;
-        text-align: center;
-        margin: auto;
-    }
+.bottom-nav-items a{
+    text-decoration: none!important;
+    text-align: center;
+    margin: auto;
+}
 
 
-    .bottom-nav-items .material-icons{
-        font-size: 40px;
-        color: var(--darkpink);
-        text-align: center;
-    }
+.bottom-nav-items .material-icons{
+    font-size: 40px;
+    color: var(--darkpink);
+    text-align: center;
+}
 
-    .bottom-nav-items .support-text{
-        display: none;
-        font-size: 10px;
-        color: var(--middlegrey);
-    }
+.bottom-nav-items .support-text{
+    display: none;
+    margin: auto;
+    font-size: 8px;
+    color: var(--middlegrey);
+}
 
-    .bottom-nav-items.popup{
-        position: relative;
-        margin-bottom: 0;
-    }
-    
-    .account-popup-list, .friend-popup-list{
-        padding: 0;
-        height: 0;
-        overflow-y: hidden;
-        position: absolute;
-        display: block;
-        list-style: none;
-        margin: 0;
-        transition: 0.5s;
-        transition-delay: 0.2s;
-    }
+.popup-link .support-text{
+    display: block;
+    width: 50px;
 
-    .friend-popup:hover .friend-popup-list, .friend-popup-list:hover{
-        height: 90px;
-    }
+}
 
-    .account-popup:hover .account-popup-list, .account-popup-list:hover{
-        height: 130px;
-    }
+.bottom-nav-items.popup{
+    position: relative;
+    margin-bottom: 0;
+}
 
-    .account-popup .account-popup-list{
-        top: -120px;
-    }
+.account-popup-list, .friend-popup-list{
+    padding: 0;
+    height: 0;
+    overflow-y: hidden;
+    position: absolute;
+    display: block;
+    list-style: none;
+    margin: 0;
+    transition: 0.5s;
+    transition-delay: 0.2s;
+}
 
-    .friend-popup .friend-popup-list{
-        top: -80px;
-    }
+.friend-popup:hover .friend-popup-list, .friend-popup-list:hover{
+    height: 90px;
+}
 
-    .popup-item .popup-link{
-        text-align: center;
-    }
+.account-popup:hover .account-popup-list, .account-popup-list:hover{
+    height: 130px;
+}
+
+.account-popup .account-popup-list{
+    top: -120px;
+}
+
+.friend-popup .friend-popup-list{
+    top: -80px;
+}
+
+.popup-item .popup-link{
+    text-align: center;
+}
 
     {% block style %}
     {% endblock style %}

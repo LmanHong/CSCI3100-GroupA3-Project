@@ -18,7 +18,7 @@ class RegistrationView(View):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
-            return redirect('home')
+            return redirect('profile')
         else:
             context = {}
             form = RegistrationForm()
@@ -34,7 +34,7 @@ class RegistrationView(View):
             raw_password = form.cleaned_data.get('password1')
             account = authenticate(email=email, password=raw_password)
             login(request, account)
-            return redirect('home')
+            return redirect('profile')
         else:
             context['registration_form'] = form
             return render(request, 'register.html', context)
@@ -52,7 +52,7 @@ class LoginView(View):
             if next_url:
                 return HttpResponseRedirect(next_url)
             else:
-                return redirect('home')
+                return redirect('profile')
         else:
             context = {}
             form = AccountAuthenticationForm()
@@ -72,7 +72,7 @@ class LoginView(View):
                 if next_url:
                     return HttpResponseRedirect(next_url)
                 else:
-                    return redirect('home')
+                    return redirect('profile')
             else:
                 context['login_form'] = form
                 return render(request, 'login.html', context)

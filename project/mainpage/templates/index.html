@@ -68,6 +68,7 @@
                                     <li><a href="{% url 'register' %}" class="">Sign up</a></li>
                                     <li><a href="{% url 'login' %}" class="">Log in</a></li>
                                     {% else %}
+                                    <li><a href="{% url 'profile' %}" class="">Account Profile</a></li>
                                     <li><a href="{% url 'profile_update' %}" class="">Account Setting</a></li>
                                     <li><a href="{% url 'logout' %}" class="">Log out</a></li>
                                     {% endif %}

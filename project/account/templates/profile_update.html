@@ -8,25 +8,31 @@ Update Profile
 
 <div class="container d-flex flex-column">
     <span class="text-center title">Edit Profile</span>
+
+    <!-- registration form -->
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
     
+        <!-- fields in profile update form -->
         {% for field in profile_update_form %}
             <div class="form-group">
                 {{field.label_tag}}
                 {{field}}
+                <!-- help text -->
                 {% if field.help_text %}
                     <div class="help-text" style="color: grey;">({{field.help_text}})</div>
                 {% endif %}
             </div>
         {% endfor %}
     
+        <!-- error prompts -->
         {% for field in profile_update_form %}
             {% for error in field.errors %}
             <div style="color: red;">{{error}}</div>
             {% endfor %}
         {% endfor %}
     
+        <!-- error prompts -->
         {% if profile_update_form.non_field_errors %}
         <div style="color: red;">{{profile_update_form.non_field_errors}}</div>
         {% endif %}

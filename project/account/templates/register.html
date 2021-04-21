@@ -9,17 +9,22 @@ Register
 <div class="container d-flex flex-column">
 
     <span class="text-center title">Register</span>
+    <!-- registration form -->
     <form method="post">
         {% csrf_token %}
     
+        <!-- fields in registration form -->
         {% for field in registration_form %}
             <div class="form-group">
                 {{field.label_tag}}
                 {{field}}
+
+                <!-- help text -->
                 {% if field.help_text %}
                     <div class="help-text" style="color: grey;">{{field.help_text}}</div>
                 {% endif %}
     
+                <!-- error prompts -->
                 {% for error in field.errors %}
                 <div style="color: red;">{{error}}</div>
                 {% endfor %}

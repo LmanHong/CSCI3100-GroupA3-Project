@@ -10,13 +10,16 @@ Login
 <div class="container d-flex flex-column">
 
     <span class="text-center title">Login</span>
+    <!-- login form -->
     <form method="post">
         {% csrf_token %}
     
+        <!-- fields in login form -->
         {% for field in login_form %}
             <div class="form-group">
                 {{field.label_tag}}
                 {{field}}
+                <!-- help text -->
                 {% if field.help_text %}
                     <div class="help-text" style="color: grey;">{{field.help_text}}</div>
                 {% endif %}
@@ -24,11 +27,13 @@ Login
         {% endfor %}
     
         {% for field in login_form %}
+            <!-- error prompts -->
             {% for error in field.errors %}
             <div style="color: red;">{{error}}</div>
             {% endfor %}
         {% endfor %}
     
+        <!-- error prompts -->
         {% if login_form.non_field_errors %}
         <div style="color: red;">{{login_form.non_field_errors}}</div>
         {% endif %}

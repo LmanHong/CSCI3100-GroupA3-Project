@@ -7,11 +7,14 @@ Profile
 {% block content %}
 
 <div class="container">
+    <!-- autheticated user -->
     {% if user.is_authenticated %}
         <div class="profile d-flex flex-column">
             <span class="text-center title">Profile</span>
 
+            <!-- profile image -->
             <img class="profile-image" src="{{user.profile.image.url}}">
+            <!-- text fields -->
             {% if not user.profile.first_name or not user.profile.last_name or not user.profile.gender or not user.profile.date_of_birth or not user.profile.job_title or not user.profile.passions %}
             <p>The profile is not fully set up yet. Please update your profile.</p>
             {% else %}
@@ -22,6 +25,7 @@ Profile
             <p>Passions: {{user.profile.passions}}</p>
             {% endif %}
         </div>
+    <!-- anonymous user -->
     {% else %}
         <div class="greeting-message">
             Hi, anonymous. Please register an account first!

@@ -3,32 +3,32 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from account.models import Profile, Account
-#prototype only
 
 class FriendListManager(models.Manager):
+    # to check if the input is not empty
     def checkinput(self,user,gender,jobtitles,passions):
         if not user or not jobtitles or not passions or not gender:
             raise ValueError("All rows cannot be empty")
         else:
             return True
 
-    #to serch friend base on their perference, to return the fulfilled query except user and user's friend
+    #to search friend base on their perference, to return the fulfilled query except user and user's friend
     def SearchFrd(self,user,gender,jobtitles,passions):
         if self.checkinput(user,gender,jobtitles,passions):
-            joblist = jobtitles.split(", ")
-            query1 = [models.Q(job_title__icontains=job) for job in joblist]
+            joblist = jobtitles.split(", ") # split the job lists by ", "
+            query1 = [models.Q(job_title__icontains=job) for job in joblist] #search query for finding user with these jobtitles
             jobquery = models.Q()
             for item in query1:
                 jobquery &= item
             passionlist = passions.split(", ")
-            query2 = [models.Q(passions__icontains=passion) for passion in passionlist]
+            query2 = [models.Q(passions__icontains=passion) for passion in passionlist] #search query for finding user with these passions
             passionquery = models.Q()
             for item in query2:
                 passionquery &= item
             if gender != "any":
-                results = Profile.objects.filter(jobquery).filter(passionquery).filter(gender=gender) #to get the potential friend
+                results = Profile.objects.filter(jobquery).filter(passionquery).filter(gender=gender) #to get the potential user with related gender
             else:
-                results = Profile.objects.filter(jobquery).filter(passionquery)
+                results = Profile.objects.filter(jobquery).filter(passionquery) #ignore the gender field
             friend_of_user = FriendList.objects.returnFriendID(user)
             #print(friend_of_user)
             result = list(results.exclude(user=user).exclude(user__in = friend_of_user).values_list('user_id',flat=True)) #the result

@@ -1,7 +1,7 @@
 from django import forms
 
 class SearchForm(forms.Form):
-    #TBD
+    #a form to store the criterias for search query (case-insensitive, i.e. search if XX contain these words, regardless of the upper/lowercase)
     genderchoices = (('M', 'Male'), ('F', ' Female'), ('any', 'Any'))
     gender = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),choices=genderchoices)
     jobtitle = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}),label='jobtitle_wanted',required=True)

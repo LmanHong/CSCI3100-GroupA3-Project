@@ -7,7 +7,9 @@ from django.http import HttpResponse
 from .models import Requests, FriendList
 from django.core.exceptions import ObjectDoesNotExist
 
+#view for friendSearchView
 class FriendSearchView(View):
+    #to get the view of friendSearch
     def get(self, request, *args, **kwargs):
         user = request.user
         if user.is_authenticated:
@@ -17,15 +19,19 @@ class FriendSearchView(View):
         else:
             print('You are not logging in')
             return redirect('login')
-    
+
+    #to receive the information from form and send it to search_result.html
     def post(self, request, *args, **kwargs):
         user = request.user
         context = {}
+        #a form to store search query
         fform = SearchForm(request.POST or None)
+        # a form to store input line
         form = RequestForm(request.POST or None)
         if not user.is_authenticated:
             return redirect('login')
-        if fform.is_valid():
+        if fform.is_valid(): #for search query part
+            #take the information from the form
             gender = request.POST['gender']
             jobtitle = request.POST['jobtitle']
             passion = request.POST['passions']
@@ -34,7 +40,7 @@ class FriendSearchView(View):
             context['RequestForm'] = RequestForm()
             #print(context['frdlist'])
             return render(request,'search_result.html',context)
-        elif form.is_valid():
+        elif form.is_valid(): #for input line to send request part
             lists = request.POST['usernamelist']
             friendlist = lists.split(", ") 
             modifiedlist = [name for name in friendlist if name != ""]
@@ -53,6 +59,7 @@ class FriendSearchView(View):
                     except ObjectDoesNotExist as e:
                         messages.error(request,"{} does not exist".format(to_user_name))
                         print("{} does not exist".format(to_user_name))
+                #redirect after sending all requests
                 return redirect('friendSearch')
         else:
             context['SearchForm'] = fform
@@ -84,10 +91,13 @@ class FriendSearchView(View):
 #        else:
 #            return redirect('home')
 
+#the view for request page
 class RequestView(View):
+    # to get view of request page
     def get(self, request, *args, **kwargs):
         user = request.user
         context = {}
+        # a form to store the input line
         context['approvelist'] = RequestForm()
 
         if user.is_authenticated:        
@@ -97,6 +107,7 @@ class RequestView(View):
         else:
             return redirect('login')
 
+    #to receive the information for request page
     def post(self, request, *args, **kwargs):
         user = request.user
         form = RequestForm(request.POST)

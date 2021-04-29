@@ -9,7 +9,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 class NotificationConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
-        self.my_noti_group = "notification_{}".format(self.user.username)
+        self.my_noti_group = "notification_{}".format(self.user.username.replace(" ", ""))
+        print(self.my_noti_group)
 
         async_to_sync(self.channel_layer.group_add)(
             self.my_noti_group,

@@ -175,7 +175,7 @@ class ChatMessage(models.Model):
         ordering = ["sent_time"]
 
 @receiver(post_save, sender=ChatMessage)
-def broadcastLatestMsg(sender, instance, created, **kwargs):
+def broadcast_latest_msg(sender, instance, created, **kwargs):
     if created:
         print("New chat message created. ", instance)
         chat_room = instance.chat_room
@@ -185,8 +185,8 @@ def broadcastLatestMsg(sender, instance, created, **kwargs):
         sent_to = from_user.username if sent_by == to_user.username else to_user.username
         print(sent_by, sent_to)
 
-        noti_group1 = "notification_{}".format(sent_by)
-        noti_group2 = "notification_{}".format(sent_to)
+        noti_group1 = "notification_{}".format(sent_by.replace(" ", ""))
+        noti_group2 = "notification_{}".format(sent_to.replace(" ", ""))
 
         async_to_sync(get_channel_layer().group_send)(
             noti_group1,

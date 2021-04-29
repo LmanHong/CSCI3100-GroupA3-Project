@@ -19,6 +19,12 @@ const msgIdPrefix = 'msg-';
 const chatSocket = new WebSocket(wsUrl);
 const isWebSocket = true;
 
+//Helper function for escaping any special characters
+function escapeSpecialChar(str){
+    var tmp = str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/{/g, "&#123;").replace(/}/g, "&#125;");
+    return tmp;
+}
+
 //Helper function for converting a datetime string to correct format
 const normalizedDateTime = (dateStr, hour24=false) =>{
     let date = new Date(dateStr);
@@ -40,7 +46,7 @@ chatSocket.onmessage = async (e) =>{
         let msgDiv = document.createElement('div');
         let sentTimeSpan = document.createElement('span');
         rowDiv.classList.add("row", "mx-1");
-        msgDiv.innerHTML = data.message_string;
+        msgDiv.innerHTML = escapeSpecialChar(data.message_string);
         msgDiv.id = msgIdPrefix+data.message_id;
         sentTimeSpan.innerHTML = normalizedDateTime(data.sent_time);
         msgDiv.classList.add("shadow-sm", "col-auto", "chat-message", (data.sent_by==toUsername?"left":"right"));

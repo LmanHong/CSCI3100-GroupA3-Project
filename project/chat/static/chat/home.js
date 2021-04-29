@@ -18,6 +18,12 @@ var isMenuOpened = false;
 
 const notificationSocket = new WebSocket(wsUrl);
 
+//Helper function for escaping any special characters
+function escapeSpecialChar(str){
+    var tmp = str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/{/g, "&#123;").replace(/}/g, "&#125;");
+    return tmp;
+}
+
 notificationSocket.onmessage = async (e) =>{
     const data = await JSON.parse(e.data);
     console.log(data);
@@ -27,7 +33,7 @@ notificationSocket.onmessage = async (e) =>{
     friendNameSpan.forEach((ref)=>{
         if (ref.innerHTML == targetUsername){
             console.log(ref.nextElementSibling);
-            ref.nextElementSibling.innerHTML = data.message_string;
+            ref.nextElementSibling.innerHTML = escapeSpecialChar(data.message_string);
         }
     });
 };

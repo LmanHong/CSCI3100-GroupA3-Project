@@ -15,11 +15,13 @@ import json
 LOGIN='/account/login/'
 
 class HomeView(LoginRequiredMixin, View):
+    #Chat Homepage view
     login_url=LOGIN
     def get(self, request, *args, **kwargs):
+        #GET request of the chat/index.html
         user = request.user
+        #Get the friend list and the latest message of each chatroom for rendering
         friendList = FriendList.objects.returnFriendList(user=user)
-        print(len(friendList))
         friendProfileList = [get_user_model().objects.get(username=friend['username']) for friend in friendList]
         latestMsgList = [ChatMessage.objects.get_latest_message(from_username=user.username, to_username=friend.username) for friend in friendProfileList]
         for i in range(len(latestMsgList)):
@@ -29,9 +31,6 @@ class HomeView(LoginRequiredMixin, View):
                 'user': friend,
                 'latestMsg': latest_msg,
             }
-        
-        for friend in friendProfileList:
-            print(friend['user'], friend['latestMsg'])
 
         context = {
             'friendList': friendProfileList,
@@ -40,6 +39,8 @@ class HomeView(LoginRequiredMixin, View):
         return render(request, 'chat/index.html', context)
 
     def post(self, request, *args, **kwargs):
+        #POST request of chat/index.html
+        #For getting the chatroom name given the target username
         user = request.user
         if user.is_authenticated:
             body = json.loads(request.body.decode('utf-8'))
@@ -71,13 +72,16 @@ class HomeView(LoginRequiredMixin, View):
 
 
 class ChatRoomView(LoginRequiredMixin, View):
+    #ChatRoom view
     login_url=LOGIN
 
     @xframe_options_sameorigin
     def get(self, request, *args, **kwargs):
+        #GET request of chat/chatroom.html
         room_name = self.kwargs['room_name']
         from_user = request.user
         try:
+            #Get the chat log of the given chatroom for rendering
             target_room = ChatRoom.objects.get_chatroom(int(room_name))
             message_set = ChatMessage.objects.get_messages_from_chatroom(int(room_name))
             message_list = [{
@@ -106,6 +110,11 @@ class ChatRoomView(LoginRequiredMixin, View):
         return render(request, 'chat/chatroom.html', context)
     
     def post(self, request, *args, **kwargs):
+        #POST request of chat/chatroom.html
+        """
+        DEPRECIATED
+        """
+        #For sending and retrieving chat messages
         room_name = self.kwargs['room_name']
         body = json.loads(request.body.decode('utf-8'))
         message_status = body["message_status"]

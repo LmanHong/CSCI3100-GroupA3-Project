@@ -7,30 +7,36 @@ from .models import ChatRoom, ChatMessage
 from django.core.serializers.json import DjangoJSONEncoder
 
 class NotificationConsumer(WebsocketConsumer):
+#Websocket consumer for broadcasting latest chat message notifications
     def connect(self):
+        #get username of the authenticated user
         self.user = self.scope["user"]
         self.my_noti_group = "notification_{}".format(self.user.username.replace(" ", ""))
-        print(self.my_noti_group)
 
+        #Add the user's channel to the group name for others to broadcast latest message notifications
         async_to_sync(self.channel_layer.group_add)(
             self.my_noti_group,
             self.channel_name
         )
 
         print("User {} connected to notification socket with group name {}.".format(self.user.username, self.my_noti_group))
+        #Accept the incoming websocket connection
         self.accept()
 
     def disconnect(self, close_code):
+        #Leave the group
         async_to_sync(self.channel_layer.group_discard)(
             self.my_noti_group,
             self.channel_name
         )
 
     def latestMsg(self, event):
+        #Get the latest message info
         message_string = event['latest_msg']['message_string']
         sent_by = event['latest_msg']['sent_by']
         sent_to = event['latest_msg']['sent_to']
 
+        #Broadcast to the specific channel
         self.send(text_data=json.dumps({
             'message_string': message_string,
             'sent_by': sent_by,
@@ -38,6 +44,7 @@ class NotificationConsumer(WebsocketConsumer):
         }, cls=DjangoJSONEncoder))
 
 class ChatConsumer(WebsocketConsumer):
+#Chat consumer for sending and receiving chat messages in chatroom
     def connect(self):
         #Get room name from url
         self.room_name = self.scope['url_route']['kwargs']['room_name']
